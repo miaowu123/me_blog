@@ -96,7 +96,7 @@
     }
 
     // Stars
-    const starCount = Math.min(120, Math.floor((w * h) / 10000));
+    const starCount = Math.min(200, Math.floor((w * h) / 6000));
     for (let i = 0; i < starCount; i++) {
       particles.push({
         x: Math.random() * w,
@@ -249,7 +249,7 @@
       p.x += p.vx; p.y += p.vy;
       if (p.x < 0 || p.x > w) p.vx *= -1;
       if (p.y < 0 || p.y > h) p.vy *= -1;
-      const twinkle = Math.sin(time * p.twinkleSpeed * 60) * 0.3 + 0.7;
+      const twinkle = Math.sin(time * p.twinkleSpeed * 80) * 0.4 + 0.6;
       ctx.globalAlpha = p.alpha * twinkle;
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
