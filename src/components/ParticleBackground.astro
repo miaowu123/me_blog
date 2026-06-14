@@ -4,13 +4,13 @@
   const canvas = document.getElementById('particle-canvas') as HTMLCanvasElement;
   const ctx = canvas.getContext('2d')!;
   let w: number, h: number;
-  
+
   // 星星粒子
   const particles: Array<{
     x: number; y: number; vx: number; vy: number;
     r: number; color: string; alpha: number; twinkleSpeed: number;
   }> = [];
-  
+
   // 樱花花瓣
   const petals: Array<{
     x: number; y: number; vx: number; vy: number;
@@ -18,9 +18,14 @@
     color: string; wobble: number; wobbleSpeed: number;
   }> = [];
 
-  const starColors = ['#ffb7d5', '#7ec8e3', '#c4b5fd', '#fbbf24'];
-  // 多种粉色樱花
-  const petalColors = ['#ffb7d5', '#ffc4dd', '#ff9ec4', '#ffd1e8', '#ffb0c8', '#fff0f5'];
+  // 光点漂浮
+  const sparkles: Array<{
+    x: number; y: number; vx: number; vy: number;
+    size: number; alpha: number; color: string; life: number; maxLife: number;
+  }> = [];
+
+  const starColors = ['#ffb7d5', '#7ec8e3', '#c4b5fd', '#fbbf24', '#ff6b9d', '#6ee7b7'];
+  const petalColors = ['#ffb7d5', '#ffc4dd', '#ff9ec4', '#ffd1e8', '#ffb0c8', '#fff0f5', '#ffc0cb', '#ffe4e9'];
 
   function resize() {
     w = canvas.width = window.innerWidth;
@@ -29,36 +34,57 @@
 
   function init() {
     resize();
-    // 星星
-    const starCount = Math.min(50, Math.floor((w * h) / 25000));
+
+    // 星星 - 增加到80颗
+    const starCount = Math.min(80, Math.floor((w * h) / 15000));
     for (let i = 0; i < starCount; i++) {
       particles.push({
         x: Math.random() * w,
         y: Math.random() * h,
         vx: (Math.random() - 0.5) * 0.3,
         vy: (Math.random() - 0.5) * 0.3,
-        r: Math.random() * 1.5 + 0.5,
+        r: Math.random() * 1.8 + 0.4,
         color: starColors[Math.floor(Math.random() * starColors.length)],
         alpha: Math.random() * 0.6 + 0.2,
-        twinkleSpeed: Math.random() * 0.02 + 0.01,
+        twinkleSpeed: Math.random() * 0.02 + 0.008,
       });
     }
-    // 樱花花瓣 - 35片，更大更明显
-    for (let i = 0; i < 35; i++) {
+
+    // 樱花花瓣 - 70片，更大更密
+    for (let i = 0; i < 70; i++) {
       petals.push({
         x: Math.random() * w,
         y: Math.random() * h * 1.5 - h * 0.5,
-        vx: Math.random() * 0.4 + 0.1,
-        vy: Math.random() * 0.6 + 0.2,
+        vx: Math.random() * 0.5 + 0.05,
+        vy: Math.random() * 0.7 + 0.15,
         rotation: Math.random() * Math.PI * 2,
-        rotationSpeed: (Math.random() - 0.5) * 0.02,
-        size: Math.random() * 12 + 6,
-        alpha: Math.random() * 0.5 + 0.4,
+        rotationSpeed: (Math.random() - 0.5) * 0.025,
+        size: Math.random() * 14 + 5,
+        alpha: Math.random() * 0.55 + 0.35,
         color: petalColors[Math.floor(Math.random() * petalColors.length)],
         wobble: Math.random() * Math.PI * 2,
-        wobbleSpeed: Math.random() * 0.02 + 0.01,
+        wobbleSpeed: Math.random() * 0.025 + 0.008,
       });
     }
+
+    // 光点 - 30个
+    for (let i = 0; i < 30; i++) {
+      spawnSparkle();
+    }
+  }
+
+  function spawnSparkle() {
+    sparkles.push({
+      x: Math.random() * w,
+      y: Math.random() * h,
+      vx: (Math.random() - 0.5) * 0.8,
+      vy: (Math.random() - 0.5) * 0.8,
+      size: Math.random() * 3 + 1,
+      alpha: 0,
+      color: starColors[Math.floor(Math.random() * starColors.length)],
+      life: 0,
+      maxLife: Math.random() * 200 + 100,
+    });
   }
 
   function drawPetal(x: number, y: number, size: number, rotation: number, alpha: number, color: string) {
@@ -66,29 +92,38 @@
     ctx.translate(x, y);
     ctx.rotate(rotation);
     ctx.globalAlpha = alpha;
-    
-    // 花瓣主体 - 更饱满的形状
+
+    // 花瓣主体
     ctx.fillStyle = color;
     ctx.beginPath();
     ctx.moveTo(0, 0);
-    ctx.bezierCurveTo(size * 0.4, -size * 0.5, size * 0.9, -size * 0.3, size, 0);
-    ctx.bezierCurveTo(size * 0.9, size * 0.3, size * 0.4, size * 0.5, 0, 0);
+    ctx.bezierCurveTo(size * 0.4, -size * 0.55, size * 0.95, -size * 0.35, size, 0);
+    ctx.bezierCurveTo(size * 0.95, size * 0.35, size * 0.4, size * 0.55, 0, 0);
     ctx.fill();
-    
+
     // 花瓣高光
-    ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
     ctx.beginPath();
-    ctx.ellipse(size * 0.45, -size * 0.05, size * 0.3, size * 0.12, -0.2, 0, Math.PI * 2);
+    ctx.ellipse(size * 0.45, -size * 0.06, size * 0.32, size * 0.13, -0.2, 0, Math.PI * 2);
     ctx.fill();
-    
+
     // 花瓣脉络
-    ctx.strokeStyle = 'rgba(255, 130, 170, 0.25)';
+    ctx.strokeStyle = 'rgba(255, 130, 170, 0.2)';
     ctx.lineWidth = 0.5;
     ctx.beginPath();
     ctx.moveTo(size * 0.1, 0);
-    ctx.quadraticCurveTo(size * 0.5, -size * 0.05, size * 0.85, 0);
+    ctx.quadraticCurveTo(size * 0.5, -size * 0.06, size * 0.85, 0);
     ctx.stroke();
-    
+
+    // 花瓣边缘柔光
+    ctx.shadowColor = color;
+    ctx.shadowBlur = 8;
+    ctx.fillStyle = 'transparent';
+    ctx.beginPath();
+    ctx.arc(0, 0, 0.1, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+
     ctx.restore();
   }
 
@@ -97,16 +132,16 @@
     ctx.clearRect(0, 0, w, h);
     time += 0.016;
 
-    // 绘制连线
+    // 连线
     for (let i = 0; i < particles.length; i++) {
       for (let j = i + 1; j < particles.length; j++) {
         const dx = particles[i].x - particles[j].x;
         const dy = particles[i].y - particles[j].y;
         const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 120) {
+        if (dist < 100) {
           ctx.beginPath();
-          ctx.strokeStyle = `rgba(196, 181, 253, ${0.1 * (1 - dist / 120)})`;
-          ctx.lineWidth = 0.5;
+          ctx.strokeStyle = `rgba(196, 181, 253, ${0.08 * (1 - dist / 100)})`;
+          ctx.lineWidth = 0.4;
           ctx.moveTo(particles[i].x, particles[i].y);
           ctx.lineTo(particles[j].x, particles[j].y);
           ctx.stroke();
@@ -114,7 +149,7 @@
       }
     }
 
-    // 绘制星星
+    // 星星
     for (const p of particles) {
       p.x += p.vx;
       p.y += p.vy;
@@ -123,7 +158,7 @@
 
       const twinkle = Math.sin(time * p.twinkleSpeed * 60) * 0.3 + 0.7;
       ctx.globalAlpha = p.alpha * twinkle;
-      
+
       ctx.beginPath();
       ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
       ctx.fillStyle = p.color;
@@ -131,25 +166,23 @@
 
       // 光晕
       ctx.beginPath();
-      ctx.arc(p.x, p.y, p.r * 4, 0, Math.PI * 2);
-      const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 4);
+      ctx.arc(p.x, p.y, p.r * 3.5, 0, Math.PI * 2);
+      const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 3.5);
       grad.addColorStop(0, p.color);
       grad.addColorStop(1, 'transparent');
       ctx.fillStyle = grad;
-      ctx.globalAlpha = p.alpha * twinkle * 0.2;
+      ctx.globalAlpha = p.alpha * twinkle * 0.15;
       ctx.fill();
       ctx.globalAlpha = 1;
     }
 
-    // 绘制樱花花瓣
+    // 樱花花瓣
     for (const petal of petals) {
-      // 飘落 + 左右摇曳
       petal.wobble += petal.wobbleSpeed;
-      petal.x += petal.vx + Math.sin(petal.wobble) * 0.6;
+      petal.x += petal.vx + Math.sin(petal.wobble) * 0.7;
       petal.y += petal.vy;
-      petal.rotation += petal.rotationSpeed + Math.sin(petal.wobble * 0.5) * 0.005;
+      petal.rotation += petal.rotationSpeed + Math.sin(petal.wobble * 0.5) * 0.006;
 
-      // 循环回收
       if (petal.y > h + 30) {
         petal.y = -30;
         petal.x = Math.random() * w;
@@ -160,6 +193,45 @@
       drawPetal(petal.x, petal.y, petal.size, petal.rotation, petal.alpha, petal.color);
     }
 
+    // 光点
+    for (let i = sparkles.length - 1; i >= 0; i--) {
+      const s = sparkles[i];
+      s.x += s.vx;
+      s.y += s.vy;
+      s.life++;
+
+      const progress = s.life / s.maxLife;
+      if (progress < 0.3) {
+        s.alpha = progress / 0.3;
+      } else if (progress > 0.7) {
+        s.alpha = (1 - progress) / 0.3;
+      } else {
+        s.alpha = 1;
+      }
+
+      ctx.globalAlpha = s.alpha * 0.6;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.size, 0, Math.PI * 2);
+      ctx.fillStyle = s.color;
+      ctx.fill();
+
+      // 光晕
+      const grad = ctx.createRadialGradient(s.x, s.y, 0, s.x, s.y, s.size * 5);
+      grad.addColorStop(0, s.color);
+      grad.addColorStop(1, 'transparent');
+      ctx.globalAlpha = s.alpha * 0.15;
+      ctx.fillStyle = grad;
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, s.size * 5, 0, Math.PI * 2);
+      ctx.fill();
+
+      if (s.life >= s.maxLife) {
+        sparkles.splice(i, 1);
+        spawnSparkle();
+      }
+    }
+
+    ctx.globalAlpha = 1;
     requestAnimationFrame(draw);
   }
 

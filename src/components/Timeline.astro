@@ -1,70 +1,105 @@
 ---
+// 动态读取所有分类文件夹和md文件
+const modules = import.meta.glob('../content/versions/**/*.md', { eager: true });
+
 interface VersionNode {
   version: string;
   date: string;
+  dateNum: number;
   title: string;
   description: string;
   changes: string[];
-  color?: 'pink' | 'blue' | 'purple' | 'green';
-  icon?: string;
+  color: string;
+  icon: string;
+  category: string;
+  categoryLabel: string;
 }
 
-const versions: VersionNode[] = [
-  {
-    version: 'v0.1.0',
-    date: '2026-06-14',
-    title: '项目初始化',
-    description: '搭建Astro博客框架，配置二次元主题',
-    changes: ['创建项目结构', '配置暗色主题', '实现粒子背景', '添加GSAP动画'],
-    color: 'pink',
-    icon: '🌸',
-  },
-  {
-    version: 'v0.0.3',
-    date: '2026-06-10',
-    title: '固件更新',
-    description: '4G模组固件优化，修复TCP连接问题',
-    changes: ['修复A7670G +IPD解析', '优化状态机超时处理', '增加强制重启机制'],
-    color: 'blue',
-    icon: '🌊',
-  },
-  {
-    version: 'v0.0.2',
-    date: '2026-06-01',
-    title: '状态机重构',
-    description: '网络模块状态机重构，支持多阶段流程',
-    changes: ['5阶段状态机架构', 'INIT流程完整实现', 'APN自动匹配IMSI'],
-    color: 'purple',
-    icon: '🔮',
-  },
-  {
-    version: 'v0.0.1',
-    date: '2026-05-15',
-    title: '原型开发',
-    description: '项目启动，完成基础AT指令测试',
-    changes: ['串口通信测试', 'AT指令解析器', '基础数据结构定义'],
-    color: 'green',
-    icon: '🌱',
-  },
-];
+const categoryMap: Record<string, string> = {
+  z_general: 'Z系列通用',
+  z_geely: 'Z系列吉利定制',
+  z_xuyu808: 'Z系列旭宇808定制',
+  gd_general: 'GD通用',
+};
+
+const colorCycle = ['pink', 'blue', 'purple', 'green'];
+
+const versions: VersionNode[] = [];
+
+for (const [path, mod] of Object.entries(modules)) {
+  // 解析路径: ../content/versions/z_general/cy2606142029.md
+  const parts = path.split('/');
+  const folder = parts[parts.length - 2];
+  const filename = parts[parts.length - 1].replace('.md', '');
+
+  // 从文件名解析日期: cy2606142029 → 2026-06-14 20:29
+  const dateMatch = filename.match(/^cy(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$/);
+  let dateStr = '';
+  let dateNum = 0;
+  if (dateMatch) {
+    const [, yy, mm, dd, hh, mi] = dateMatch;
+    dateStr = `20${yy}-${mm}-${dd} ${hh}:${mi}`;
+    dateNum = new Date(`20${yy}-${mm}-${dd}T${hh}:${mi}:00`).getTime();
+  }
+
+  const frontmatter = (mod as any).frontmatter || {};
+  
+  versions.push({
+    version: filename,
+    date: dateStr,
+    dateNum,
+    title: frontmatter.title || filename,
+    description: frontmatter.description || '',
+    changes: frontmatter.changes || [],
+    color: frontmatter.color || 'pink',
+    icon: frontmatter.icon || '✿',
+    category: folder,
+    categoryLabel: categoryMap[folder] || folder,
+  });
+}
+
+// 按日期倒序
+versions.sort((a, b) => b.dateNum - a.dateNum);
+
+// 获取所有分类（保持自定义顺序）
+const categories = Object.keys(categoryMap).filter(cat => 
+  versions.some(v => v.category === cat)
+);
 ---
 
 <section class="timeline-section" id="timeline">
+  <!-- 分类标签 -->
+  <div class="category-tabs">
+    <button class="tab-btn active" data-category="all">
+      <span class="tab-icon">✧</span>
+      全部
+    </button>
+    {categories.map(cat => (
+      <button class="tab-btn" data-category={cat}>
+        <span class="tab-icon">
+          {cat === 'z_general' ? '📦' : cat === 'z_geely' ? '🚗' : cat === 'z_xuyu808' ? '🏭' : '⚡'}
+        </span>
+        {categoryMap[cat]}
+      </button>
+    ))}
+  </div>
+
   <h2 class="section-title">
     <span class="title-decoration">✧</span>
     版本树
     <span class="title-decoration">✧</span>
   </h2>
+
   <div class="timeline">
     {versions.map((v, i) => (
-      <div class={`timeline-item ${i % 2 === 0 ? 'left' : 'right'} color-${v.color || 'pink'}`}>
+      <div class={`timeline-item ${i % 2 === 0 ? 'left' : 'right'} color-${v.color}`}
+           data-category={v.category}>
         <div class="timeline-connector">
           <div class="timeline-dot"></div>
-          <div class="timeline-line"></div>
         </div>
-        <div class="timeline-card glass" data-version={v.version}>
+        <div class="timeline-card glass">
           <div class="card-header">
-            <span class="version-badge">{v.version}</span>
+            <span class="category-tag">{v.categoryLabel}</span>
             <span class="card-date">{v.date}</span>
           </div>
           <h3 class="card-title">
@@ -72,17 +107,21 @@ const versions: VersionNode[] = [
             {v.title}
           </h3>
           <p class="card-desc">{v.description}</p>
-          <div class="card-changes" style="display: none;">
-            <ul>
-              {v.changes.map(change => (
-                <li>✿ {change}</li>
-              ))}
-            </ul>
-          </div>
-          <button class="expand-btn" onclick="toggleCard(this)">
-            <span class="expand-text">展开详情</span>
-            <span class="expand-icon">▼</span>
-          </button>
+          {v.changes.length > 0 && (
+            <div class="card-changes" style="display: none;">
+              <ul>
+                {v.changes.map(change => (
+                  <li>✿ {change}</li>
+                ))}
+              </ul>
+            </div>
+          )}
+          {v.changes.length > 0 && (
+            <button class="expand-btn" onclick="toggleCard(this)">
+              <span class="expand-text">展开详情</span>
+              <span class="expand-icon">▼</span>
+            </button>
+          )}
         </div>
       </div>
     ))}
@@ -113,14 +152,31 @@ const versions: VersionNode[] = [
     }
   }
 
-  // Scroll animation with IntersectionObserver
+  // 分类标签切换
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const cat = btn.getAttribute('data-category');
+      document.querySelectorAll('.timeline-item').forEach(item => {
+        if (cat === 'all' || item.getAttribute('data-category') === cat) {
+          item.style.display = '';
+          item.classList.add('visible');
+        } else {
+          item.style.display = 'none';
+        }
+      });
+    });
+  });
+
+  // 滚动动画
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
         entry.target.classList.add('visible');
       }
     });
-  }, { threshold: 0.2 });
+  }, { threshold: 0.15 });
 
   document.querySelectorAll('.timeline-item').forEach(el => observer.observe(el));
 </script>
@@ -129,15 +185,57 @@ const versions: VersionNode[] = [
   .timeline-section {
     position: relative;
     z-index: 1;
-    padding: 6rem 2rem;
+    padding: 4rem 2rem 6rem;
     max-width: 1000px;
     margin: 0 auto;
+  }
+
+  .category-tabs {
+    display: flex;
+    justify-content: center;
+    gap: 0.8rem;
+    margin-bottom: 3rem;
+    flex-wrap: wrap;
+    padding: 0 1rem;
+  }
+
+  .tab-btn {
+    background: rgba(21, 21, 48, 0.7);
+    border: 1px solid rgba(255, 183, 213, 0.15);
+    border-radius: 25px;
+    padding: 0.5rem 1.2rem;
+    color: var(--text-secondary);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-family: inherit;
+    backdrop-filter: blur(8px);
+  }
+
+  .tab-btn:hover {
+    border-color: rgba(255, 183, 213, 0.4);
+    color: var(--text-primary);
+    transform: translateY(-2px);
+  }
+
+  .tab-btn.active {
+    background: linear-gradient(135deg, rgba(255, 107, 157, 0.2), rgba(196, 181, 253, 0.2));
+    border-color: var(--sakura-pink);
+    color: var(--sakura-pink);
+    box-shadow: 0 0 15px rgba(255, 183, 213, 0.2);
+  }
+
+  .tab-icon {
+    font-size: 0.9em;
   }
 
   .section-title {
     text-align: center;
     font-size: 2rem;
-    margin-bottom: 4rem;
+    margin-bottom: 3rem;
     color: var(--text-primary);
     letter-spacing: 0.1em;
     font-family: 'Ma Shan Zheng', cursive;
@@ -233,25 +331,10 @@ const versions: VersionNode[] = [
     left: -2rem;
   }
 
-  .color-pink .timeline-dot {
-    background: var(--sakura-pink);
-    box-shadow: 0 0 15px rgba(255, 183, 213, 0.6);
-  }
-
-  .color-blue .timeline-dot {
-    background: var(--sky-blue);
-    box-shadow: 0 0 15px rgba(126, 200, 227, 0.6);
-  }
-
-  .color-purple .timeline-dot {
-    background: var(--lavender);
-    box-shadow: 0 0 15px rgba(196, 181, 253, 0.6);
-  }
-
-  .color-green .timeline-dot {
-    background: var(--mint);
-    box-shadow: 0 0 15px rgba(110, 231, 183, 0.6);
-  }
+  .color-pink .timeline-dot { background: var(--sakura-pink); box-shadow: 0 0 15px rgba(255, 183, 213, 0.6); }
+  .color-blue .timeline-dot { background: var(--sky-blue); box-shadow: 0 0 15px rgba(126, 200, 227, 0.6); }
+  .color-purple .timeline-dot { background: var(--lavender); box-shadow: 0 0 15px rgba(196, 181, 253, 0.6); }
+  .color-green .timeline-dot { background: var(--mint); box-shadow: 0 0 15px rgba(110, 231, 183, 0.6); }
 
   .timeline-item:hover .timeline-dot {
     transform: translateX(-50%) scale(1.4);
@@ -268,9 +351,7 @@ const versions: VersionNode[] = [
   .timeline-card::before {
     content: '';
     position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
+    top: 0; left: 0; right: 0;
     height: 3px;
     background: linear-gradient(90deg, transparent, var(--sakura-pink), transparent);
     opacity: 0;
@@ -285,25 +366,10 @@ const versions: VersionNode[] = [
     opacity: 1;
   }
 
-  .color-pink .timeline-card:hover {
-    border-color: rgba(255, 183, 213, 0.3);
-    box-shadow: var(--glow-pink);
-  }
-
-  .color-blue .timeline-card:hover {
-    border-color: rgba(126, 200, 227, 0.3);
-    box-shadow: var(--glow-blue);
-  }
-
-  .color-purple .timeline-card:hover {
-    border-color: rgba(196, 181, 253, 0.3);
-    box-shadow: var(--glow-purple);
-  }
-
-  .color-green .timeline-card:hover {
-    border-color: rgba(110, 231, 183, 0.3);
-    box-shadow: 0 0 20px rgba(110, 231, 183, 0.4);
-  }
+  .color-pink .timeline-card:hover { border-color: rgba(255, 183, 213, 0.3); box-shadow: var(--glow-pink); }
+  .color-blue .timeline-card:hover { border-color: rgba(126, 200, 227, 0.3); box-shadow: var(--glow-blue); }
+  .color-purple .timeline-card:hover { border-color: rgba(196, 181, 253, 0.3); box-shadow: var(--glow-purple); }
+  .color-green .timeline-card:hover { border-color: rgba(110, 231, 183, 0.3); box-shadow: 0 0 20px rgba(110, 231, 183, 0.4); }
 
   .card-header {
     display: flex;
@@ -312,37 +378,19 @@ const versions: VersionNode[] = [
     margin-bottom: 0.8rem;
   }
 
-  .version-badge {
-    font-size: 0.75rem;
-    padding: 0.25rem 0.7rem;
-    border-radius: 20px;
-    font-weight: 600;
-    letter-spacing: 0.05em;
-  }
-
-  .color-pink .version-badge {
-    background: rgba(255, 183, 213, 0.15);
+  .category-tag {
+    font-size: 0.7rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 12px;
+    font-weight: 500;
+    background: rgba(255, 183, 213, 0.1);
     color: var(--sakura-pink);
-    border: 1px solid rgba(255, 183, 213, 0.3);
+    border: 1px solid rgba(255, 183, 213, 0.2);
   }
 
-  .color-blue .version-badge {
-    background: rgba(126, 200, 227, 0.15);
-    color: var(--sky-blue);
-    border: 1px solid rgba(126, 200, 227, 0.3);
-  }
-
-  .color-purple .version-badge {
-    background: rgba(196, 181, 253, 0.15);
-    color: var(--lavender);
-    border: 1px solid rgba(196, 181, 253, 0.3);
-  }
-
-  .color-green .version-badge {
-    background: rgba(110, 231, 183, 0.15);
-    color: var(--mint);
-    border: 1px solid rgba(110, 231, 183, 0.3);
-  }
+  .color-blue .category-tag { background: rgba(126, 200, 227, 0.1); color: var(--sky-blue); border-color: rgba(126, 200, 227, 0.2); }
+  .color-purple .category-tag { background: rgba(196, 181, 253, 0.1); color: var(--lavender); border-color: rgba(196, 181, 253, 0.2); }
+  .color-green .category-tag { background: rgba(110, 231, 183, 0.1); color: var(--mint); border-color: rgba(110, 231, 183, 0.2); }
 
   .card-date {
     font-size: 0.8rem;
@@ -358,9 +406,7 @@ const versions: VersionNode[] = [
     gap: 0.4rem;
   }
 
-  .card-icon {
-    font-size: 1.1em;
-  }
+  .card-icon { font-size: 1.1em; }
 
   .card-desc {
     font-size: 0.9rem;
@@ -376,10 +422,7 @@ const versions: VersionNode[] = [
     transition: all 0.3s ease;
   }
 
-  .card-changes ul {
-    list-style: none;
-    padding: 0;
-  }
+  .card-changes ul { list-style: none; padding: 0; }
 
   .card-changes li {
     padding: 0.3rem 0;
@@ -402,9 +445,7 @@ const versions: VersionNode[] = [
     font-family: inherit;
   }
 
-  .expand-btn:hover {
-    color: var(--sakura-pink);
-  }
+  .expand-btn:hover { color: var(--sakura-pink); }
 
   .expand-icon {
     font-size: 0.7rem;
@@ -412,10 +453,7 @@ const versions: VersionNode[] = [
   }
 
   @media (max-width: 768px) {
-    .timeline::before {
-      left: 1rem;
-    }
-
+    .timeline::before { left: 1rem; }
     .timeline-item {
       width: calc(100% - 3rem);
       margin-left: 2.5rem !important;
@@ -423,19 +461,10 @@ const versions: VersionNode[] = [
       padding-left: 1.5rem;
       padding-right: 0;
     }
-
-    .timeline-connector {
-      left: -1.5rem !important;
-      right: auto !important;
-    }
-
-    .timeline-dot {
-      left: -2rem !important;
-      right: auto !important;
-    }
-
-    .timeline-section {
-      padding: 3rem 1rem;
-    }
+    .timeline-connector { left: -1.5rem !important; right: auto !important; }
+    .timeline-dot { left: -2rem !important; right: auto !important; }
+    .timeline-section { padding: 2rem 1rem 4rem; }
+    .category-tabs { gap: 0.5rem; }
+    .tab-btn { padding: 0.4rem 0.8rem; font-size: 0.75rem; }
   }
 </style>
