@@ -19,33 +19,5 @@ const { title, description = '我的世界' } = Astro.props;
   </head>
   <body>
     <slot />
-    <script is:inline>
-      const themes = ['', 'mint', 'purple', 'ocean'];
-      const themeNames = ['🌸 樱花粉', '🌿 薄荷绿', '💜 暗紫', '🌊 海蓝'];
-      let current = parseInt(localStorage.getItem('theme') || '0');
-      
-      function applyTheme(idx) {
-        const theme = themes[idx];
-        if (theme) {
-          document.documentElement.setAttribute('data-theme', theme);
-        } else {
-          document.documentElement.removeAttribute('data-theme');
-        }
-        localStorage.setItem('theme', idx);
-        current = idx;
-      }
-      
-      // Apply saved theme
-      if (current > 0) applyTheme(current);
-      
-      // Theme toggle
-      document.addEventListener('click', (e) => {
-        const btn = (e.target as HTMLElement).closest('#theme-toggle');
-        if (!btn) return;
-        const next = (current + 1) % themes.length;
-        applyTheme(next);
-        btn.title = themeNames[next];
-      });
-    </script>
   </body>
 </html>

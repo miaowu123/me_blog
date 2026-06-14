@@ -26,7 +26,36 @@
     </div>
   </nav>
 </header>
+<script>
+  const themes = ['', 'mint', 'purple', 'ocean'];
+  const icons = ['🌸', '🌿', '💜', '🌊'];
+  let idx = parseInt(localStorage.getItem('theme') || '0');
 
+  function applyTheme(i: number) {
+    if (themes[i]) {
+      document.documentElement.setAttribute('data-theme', themes[i]);
+    } else {
+      document.documentElement.removeAttribute('data-theme');
+    }
+    localStorage.setItem('theme', String(i));
+    idx = i;
+  }
+
+  // Apply on load
+  if (idx > 0) applyTheme(idx);
+
+  const btn = document.getElementById('theme-toggle');
+  if (btn) {
+    btn.addEventListener('click', () => {
+      const next = (idx + 1) % themes.length;
+      applyTheme(next);
+      const icon = btn.querySelector('.theme-icon');
+      if (icon) icon.textContent = icons[next];
+    });
+  }
+</script>
+
+<style>
 <style>
   .site-header {
     position: fixed;
