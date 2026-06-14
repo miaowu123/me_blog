@@ -12,7 +12,7 @@ import Footer from '../components/Footer.astro';
     <section class="about-page">
       <div class="about-card glass">
         <div class="avatar-container">
-          <div class="avatar">🌸</div>
+          <img src="/me_blog/images/avatar.jpg" alt="avatar" class="avatar-img" />
         </div>
         <h1 class="about-name">lc0626</h1>
         <p class="about-role">嵌入式开发者 · IoT探索者</p>
@@ -66,6 +66,13 @@ import Footer from '../components/Footer.astro';
     margin: 0 auto;
     box-shadow: 0 0 30px rgba(255, 183, 213, 0.3);
     animation: float 3s ease-in-out infinite;
+    overflow: hidden;
+  }
+  .avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
   }
 
   @keyframes float {
