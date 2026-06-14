@@ -1,1 +1,234 @@
-File unchanged since last read. The content from the earlier read_file result in this conversation is still current — refer to that instead of re-reading.
+---
+---
+
+<section class="hero">
+  <div class="hero-content">
+    <h1 class="hero-title">
+      <span class="line-2">build your dreams</span>
+    </h1>
+    <p class="hero-sub">固件版本管理</p>
+    <a href={`${import.meta.env.BASE_URL}/versions`} class="hero-cta">
+      <span class="cta-icon">✿</span>
+      <span>探索版本树</span>
+      <span class="arrow">→</span>
+    </a>
+  </div>
+  <div class="hero-decoration">
+    <div class="sakura-cluster cluster-1">❀ ❀ ❀</div>
+    <div class="sakura-cluster cluster-2">✿ ✿</div>
+    <div class="star star-1">✦</div>
+    <div class="star star-2">✧</div>
+    <div class="star star-3">✦</div>
+    <div class="star star-4">✧</div>
+    <div class="star star-5">✦</div>
+    <div class="star star-6">✧</div>
+    <div class="star star-7">✦</div>
+    <div class="star star-8">✧</div>
+    <div class="star star-9">✦</div>
+    <div class="star star-10">✧</div>
+    <div class="star star-11">✦</div>
+    <div class="star star-12">✧</div>
+    <div class="star star-13">✦</div>
+    <div class="star star-14">✧</div>
+    <div class="star star-15">✦</div>
+    <div class="star star-16">✧</div>
+    <div class="star star-17">✦</div>
+    <div class="star star-18">✧</div>
+    <div class="star star-19">✦</div>
+    <div class="star star-20">✧</div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1;
+    overflow: hidden;
+  }
+
+  .hero-content {
+    text-align: center;
+    z-index: 2;
+  }
+
+  .hero-title {
+    font-size: clamp(2.5rem, 8vw, 5rem);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1.5rem;
+  }
+
+  .line-1 {
+    display: block;
+    color: var(--sakura-pink);
+    font-weight: 300;
+    font-size: 0.5em;
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    animation: float-star 3s ease-in-out infinite;
+  }
+
+  .line-2 {
+    display: block;
+    background: linear-gradient(135deg, var(--sakura-pink), var(--lavender), var(--sky-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    filter: drop-shadow(0 0 30px rgba(255, 183, 213, 0.3));
+    animation: gradient-shift 5s ease-in-out infinite;
+    background-size: 200% 200%;
+    font-family: 'Ma Shan Zheng', cursive;
+    font-size: 1.1em;
+  }
+
+  @keyframes gradient-shift {
+    0%, 100% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+  }
+
+  @keyframes float-star {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-5px); }
+  }
+
+  .hero-sub {
+    color: var(--text-secondary);
+    font-size: 1.1rem;
+    margin-bottom: 2.5rem;
+    letter-spacing: 0.1em;
+  }
+
+  .hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 0.9rem 2.2rem;
+    border: 2px solid var(--sakura-pink);
+    border-radius: 50px;
+    text-decoration: none;
+    color: var(--sakura-pink);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    background: rgba(255, 183, 213, 0.05);
+  }
+
+  .hero-cta::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--sakura-deep), var(--lavender));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: -1;
+  }
+
+  .hero-cta:hover {
+    color: #fff;
+    box-shadow: var(--glow-pink);
+    transform: translateY(-2px);
+  }
+
+  .hero-cta:hover::before {
+    opacity: 1;
+  }
+
+  .cta-icon {
+    font-size: 1.2em;
+    animation: spin-slow 4s linear infinite;
+  }
+
+  @keyframes spin-slow {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+  }
+
+  .arrow {
+    transition: transform 0.3s ease;
+  }
+
+  .hero-cta:hover .arrow {
+    transform: translateX(5px);
+  }
+
+  /* 装饰元素 */
+  .hero-decoration {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+  }
+
+  .sakura-cluster {
+    position: absolute;
+    font-size: 1.5rem;
+    opacity: 0.3;
+    animation: float-cluster 6s ease-in-out infinite;
+  }
+
+  .cluster-1 {
+    top: 15%;
+    left: 10%;
+    animation-delay: 0s;
+    color: var(--sakura-pink);
+  }
+
+  .cluster-2 {
+    bottom: 20%;
+    right: 8%;
+    animation-delay: 2s;
+    color: var(--sakura-deep);
+  }
+
+  @keyframes float-cluster {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    50% { transform: translateY(-15px) rotate(5deg); }
+  }
+
+  .star {
+    position: absolute;
+    font-size: 1.2rem;
+    animation: twinkle-star 2s ease-in-out infinite;
+  }
+
+  .star-1 { top: 25%; left: 15%; color: var(--peach); animation-delay: 0s; font-size: 1rem; }
+  .star-2 { top: 35%; right: 12%; color: var(--sky-blue); animation-delay: 0.3s; font-size: 1.4rem; }
+  .star-3 { top: 60%; left: 8%; color: var(--lavender); animation-delay: 0.6s; font-size: 0.9rem; }
+  .star-4 { top: 75%; right: 20%; color: var(--sakura-pink); animation-delay: 0.9s; font-size: 1.6rem; }
+  .star-5 { top: 15%; left: 35%; color: var(--sakura-deep); animation-delay: 1.2s; font-size: 1.1rem; }
+  .star-6 { top: 45%; left: 25%; color: #6ee7b7; animation-delay: 1.5s; font-size: 1.3rem; }
+  .star-7 { top: 80%; left: 40%; color: var(--peach); animation-delay: 1.8s; font-size: 0.8rem; }
+  .star-8 { top: 20%; right: 30%; color: var(--sky-blue); animation-delay: 0.2s; font-size: 1.5rem; }
+  .star-9 { top: 55%; right: 35%; color: var(--lavender); animation-delay: 0.5s; font-size: 1.2rem; }
+  .star-10 { top: 70%; left: 18%; color: var(--sakura-pink); animation-delay: 0.8s; font-size: 1rem; }
+  .star-11 { top: 40%; right: 8%; color: #c4b5fd; animation-delay: 1.1s; font-size: 1.7rem; }
+  .star-12 { top: 85%; right: 15%; color: var(--sakura-deep); animation-delay: 1.4s; font-size: 0.9rem; }
+  .star-13 { top: 10%; left: 50%; color: var(--peach); animation-delay: 1.7s; font-size: 1.3rem; }
+  .star-14 { top: 50%; left: 45%; color: var(--sky-blue); animation-delay: 0.1s; font-size: 1.1rem; }
+  .star-15 { top: 30%; left: 5%; color: #6ee7b7; animation-delay: 0.4s; font-size: 1.4rem; }
+  .star-16 { top: 65%; right: 5%; color: var(--lavender); animation-delay: 0.7s; font-size: 1rem; }
+  .star-17 { top: 90%; left: 30%; color: var(--sakura-pink); animation-delay: 1s; font-size: 1.6rem; }
+  .star-18 { top: 5%; right: 40%; color: var(--peach); animation-delay: 1.3s; font-size: 0.8rem; }
+  .star-19 { top: 42%; left: 10%; color: var(--sakura-deep); animation-delay: 1.6s; font-size: 1.2rem; }
+  .star-20 { top: 78%; right: 28%; color: var(--sky-blue); animation-delay: 1.9s; font-size: 1.5rem; }
+
+  @keyframes twinkle-star {
+    0%, 100% { opacity: 0.3; transform: scale(1); }
+    50% { opacity: 1; transform: scale(1.3); }
+  }
+
+  @media (max-width: 768px) {
+    .hero-sub {
+      font-size: 0.9rem;
+      padding: 0 1rem;
+    }
+    .sakura-cluster {
+      font-size: 1rem;
+    }
+  }
+</style>
