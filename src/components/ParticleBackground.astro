@@ -1,5 +1,5 @@
 <canvas id="particle-canvas"></canvas>
-<div class="jumping-cat" id="jumpingCat">🐱</div>
+<div class="jumping-cat" id="jumpingCat"><img src="/me_blog/images/crying-cat.webp" alt="cat" /></div>
 
 <script>
   const canvas = document.getElementById('particle-canvas') as HTMLCanvasElement;
@@ -330,6 +330,8 @@
   }
 
   .jumping-cat {
+    width: 80px;
+    height: 80px;
     position: fixed;
     bottom: 20px;
     font-size: 2rem;
@@ -337,6 +339,11 @@
     pointer-events: none;
     animation: cat-bounce 1.5s ease-in-out infinite;
     filter: drop-shadow(0 0 10px rgba(255, 183, 213, 0.5));
+  }
+  .jumping-cat img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
   }
 
   @keyframes cat-bounce {
