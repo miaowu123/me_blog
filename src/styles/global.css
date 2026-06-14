@@ -1,7 +1,7 @@
 @import url('https://fonts.loli.net/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Ma+Shan+Zheng&display=swap');
 
 :root {
-  /* 二次元粉蓝紫配色 */
+  /* 樱花粉 (默认) */
   --bg-dark: #0d0d1a;
   --bg-card: #151530;
   --sakura-pink: #ffb7d5;
@@ -15,6 +15,39 @@
   --glow-pink: 0 0 20px rgba(255, 183, 213, 0.4);
   --glow-blue: 0 0 20px rgba(126, 200, 227, 0.4);
   --glow-purple: 0 0 20px rgba(196, 181, 253, 0.4);
+}
+
+/* 薄荷绿主题 */
+[data-theme="mint"] {
+  --sakura-pink: #6ee7b7;
+  --sakura-deep: #34d399;
+  --sky-blue: #67e8f9;
+  --lavender: #a5f3fc;
+  --glow-pink: 0 0 20px rgba(110, 231, 183, 0.4);
+  --glow-blue: 0 0 20px rgba(103, 232, 249, 0.4);
+  --glow-purple: 0 0 20px rgba(165, 243, 252, 0.4);
+}
+
+/* 暗紫主题 */
+[data-theme="purple"] {
+  --sakura-pink: #c4b5fd;
+  --sakura-deep: #a78bfa;
+  --sky-blue: #e879f9;
+  --lavender: #f0abfc;
+  --glow-pink: 0 0 20px rgba(196, 181, 253, 0.4);
+  --glow-blue: 0 0 20px rgba(232, 121, 249, 0.4);
+  --glow-purple: 0 0 20px rgba(240, 171, 252, 0.4);
+}
+
+/* 海蓝主题 */
+[data-theme="ocean"] {
+  --sakura-pink: #7ec8e3;
+  --sakura-deep: #38bdf8;
+  --sky-blue: #fbbf24;
+  --lavender: #fcd34d;
+  --glow-pink: 0 0 20px rgba(126, 200, 227, 0.4);
+  --glow-blue: 0 0 20px rgba(251, 191, 36, 0.4);
+  --glow-purple: 0 0 20px rgba(252, 211, 77, 0.4);
 }
 
 * {

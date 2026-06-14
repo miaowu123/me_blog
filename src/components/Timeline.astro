@@ -1,18 +1,21 @@
 ---
-// 动态读取所有分类文件夹和md文件
 const modules = import.meta.glob('../content/versions/**/*.md', { eager: true });
+
+interface CommitGroup {
+  date: string;
+  messages: string[];
+}
 
 interface VersionNode {
   version: string;
   date: string;
   dateNum: number;
   title: string;
-  description: string;
-  changes: string[];
-  color: string;
   icon: string;
+  color: string;
   category: string;
   categoryLabel: string;
+  commits: CommitGroup[];
 }
 
 const categoryMap: Record<string, string> = {
@@ -22,53 +25,45 @@ const categoryMap: Record<string, string> = {
   gd_general: 'GD通用',
 };
 
-const colorCycle = ['pink', 'blue', 'purple', 'green'];
-
 const versions: VersionNode[] = [];
 
 for (const [path, mod] of Object.entries(modules)) {
-  // 解析路径: ../content/versions/z_general/cy2606142029.md
   const parts = path.split('/');
   const folder = parts[parts.length - 2];
   const filename = parts[parts.length - 1].replace('.md', '');
 
-  // 从文件名解析日期: cy2606142029 → 2026-06-14 20:29
   const dateMatch = filename.match(/^cy(\d{2})(\d{2})(\d{2})(\d{2})(\d{2})$/);
   let dateStr = '';
   let dateNum = 0;
   if (dateMatch) {
     const [, yy, mm, dd, hh, mi] = dateMatch;
-    dateStr = `20${yy}-${mm}-${dd} ${hh}:${mi}`;
+    dateStr = `20${yy}-${mm}-${dd}`;
     dateNum = new Date(`20${yy}-${mm}-${dd}T${hh}:${mi}:00`).getTime();
   }
 
-  const frontmatter = (mod as any).frontmatter || {};
+  const fm = (mod as any).frontmatter || {};
   
   versions.push({
     version: filename,
     date: dateStr,
     dateNum,
-    title: frontmatter.title || filename,
-    description: frontmatter.description || '',
-    changes: frontmatter.changes || [],
-    color: frontmatter.color || 'pink',
-    icon: frontmatter.icon || '✿',
+    title: fm.title || filename,
+    icon: fm.icon || '✿',
+    color: fm.color || 'pink',
     category: folder,
     categoryLabel: categoryMap[folder] || folder,
+    commits: fm.commits || [],
   });
 }
 
-// 按日期倒序
 versions.sort((a, b) => b.dateNum - a.dateNum);
 
-// 获取所有分类（保持自定义顺序）
 const categories = Object.keys(categoryMap).filter(cat => 
   versions.some(v => v.category === cat)
 );
 ---
 
 <section class="timeline-section" id="timeline">
-  <!-- 分类标签 -->
   <div class="category-tabs">
     <button class="tab-btn active" data-category="all">
       <span class="tab-icon">✧</span>
@@ -106,17 +101,21 @@ const categories = Object.keys(categoryMap).filter(cat =>
             <span class="card-icon">{v.icon}</span>
             {v.title}
           </h3>
-          <p class="card-desc">{v.description}</p>
-          {v.changes.length > 0 && (
-            <div class="card-changes" style="display: none;">
-              <ul>
-                {v.changes.map(change => (
-                  <li>✿ {change}</li>
-                ))}
-              </ul>
+          {v.commits.length > 0 && (
+            <div class="card-commits" style="display: none;">
+              {v.commits.map((cg) => (
+                <div class="commit-group">
+                  <div class="commit-date">提交日期: {cg.date}</div>
+                  <ol class="commit-list">
+                    {cg.messages.map((msg) => (
+                      <li>{msg}</li>
+                    ))}
+                  </ol>
+                </div>
+              ))}
             </div>
           )}
-          {v.changes.length > 0 && (
+          {v.commits.length > 0 && (
             <button class="expand-btn">
               <span class="expand-text">展开详情</span>
               <span class="expand-icon">▼</span>
@@ -129,36 +128,35 @@ const categories = Object.keys(categoryMap).filter(cat =>
 </section>
 
 <script>
-  // Event delegation for expand buttons
   document.addEventListener('click', (e) => {
     const btn = (e.target as HTMLElement).closest('.expand-btn');
     if (!btn) return;
     
     const card = btn.closest('.timeline-card')!;
-    const changes = card.querySelector('.card-changes') as HTMLElement;
+    const commits = card.querySelector('.card-commits') as HTMLElement;
     const text = btn.querySelector('.expand-text')!;
     const icon = btn.querySelector('.expand-icon') as HTMLElement;
 
-    if (changes.style.display === 'none' || !changes.style.display) {
-      changes.style.display = 'block';
+    if (!commits || commits.style.display === 'none' || !commits.style.display) {
+      if (!commits) return;
+      commits.style.display = 'block';
       requestAnimationFrame(() => {
-        changes.style.maxHeight = changes.scrollHeight + 'px';
-        changes.style.opacity = '1';
+        commits.style.maxHeight = commits.scrollHeight + 'px';
+        commits.style.opacity = '1';
       });
       text.textContent = '收起详情';
       icon.style.transform = 'rotate(180deg)';
       card.classList.add('expanded');
     } else {
-      changes.style.maxHeight = '0';
-      changes.style.opacity = '0';
-      setTimeout(() => { changes.style.display = 'none'; }, 300);
+      commits.style.maxHeight = '0';
+      commits.style.opacity = '0';
+      setTimeout(() => { commits.style.display = 'none'; }, 300);
       text.textContent = '展开详情';
       icon.style.transform = 'rotate(0deg)';
       card.classList.remove('expanded');
     }
   });
 
-  // 分类标签切换
   document.querySelectorAll('.tab-btn').forEach(btn => {
     btn.addEventListener('click', () => {
       document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -175,7 +173,6 @@ const categories = Object.keys(categoryMap).filter(cat =>
     });
   });
 
-  // 滚动动画
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -234,10 +231,6 @@ const categories = Object.keys(categoryMap).filter(cat =>
     box-shadow: 0 0 15px rgba(255, 183, 213, 0.2);
   }
 
-  .tab-icon {
-    font-size: 0.9em;
-  }
-
   .section-title {
     text-align: center;
     font-size: 2rem;
@@ -265,14 +258,7 @@ const categories = Object.keys(categoryMap).filter(cat =>
     top: 0;
     bottom: 0;
     width: 2px;
-    background: linear-gradient(
-      to bottom,
-      transparent,
-      var(--lavender) 10%,
-      var(--sakura-pink) 50%,
-      var(--sky-blue) 90%,
-      transparent
-    );
+    background: linear-gradient(to bottom, transparent, var(--lavender) 10%, var(--sakura-pink) 50%, var(--sky-blue) 90%, transparent);
     transform: translateX(-50%);
     box-shadow: 0 0 10px rgba(196, 181, 253, 0.3);
   }
@@ -286,186 +272,127 @@ const categories = Object.keys(categoryMap).filter(cat =>
     transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
   }
 
-  .timeline-item.visible {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  .timeline-item.visible { opacity: 1; transform: translateY(0); }
+  .timeline-item.left { margin-right: auto; margin-left: 0; padding-right: 3rem; }
+  .timeline-item.right { margin-left: auto; margin-right: 0; padding-left: 3rem; }
 
-  .timeline-item.left {
-    margin-right: auto;
-    margin-left: 0;
-    padding-right: 3rem;
-  }
-
-  .timeline-item.right {
-    margin-left: auto;
-    margin-right: 0;
-    padding-left: 3rem;
-  }
-
-  .timeline-connector {
-    position: absolute;
-    top: 1.5rem;
-    width: 2px;
-    height: calc(100% - 3rem);
-  }
-
-  .timeline-item.left .timeline-connector {
-    right: -1rem;
-  }
-
-  .timeline-item.right .timeline-connector {
-    left: -1rem;
-  }
+  .timeline-connector { position: absolute; top: 1.5rem; width: 2px; height: calc(100% - 3rem); }
+  .timeline-item.left .timeline-connector { right: -1rem; }
+  .timeline-item.right .timeline-connector { left: -1rem; }
 
   .timeline-dot {
-    width: 16px;
-    height: 16px;
-    border-radius: 50%;
-    position: absolute;
-    top: 0;
-    transform: translateX(-50%);
-    transition: all 0.3s ease;
-    border: 2px solid var(--bg-dark);
+    width: 16px; height: 16px; border-radius: 50%;
+    position: absolute; top: 0; transform: translateX(-50%);
+    transition: all 0.3s ease; border: 2px solid var(--bg-dark);
   }
-
-  .timeline-item.left .timeline-dot {
-    right: -2rem;
-  }
-
-  .timeline-item.right .timeline-dot {
-    left: -2rem;
-  }
+  .timeline-item.left .timeline-dot { right: -2rem; }
+  .timeline-item.right .timeline-dot { left: -2rem; }
 
   .color-pink .timeline-dot { background: var(--sakura-pink); box-shadow: 0 0 15px rgba(255, 183, 213, 0.6); }
   .color-blue .timeline-dot { background: var(--sky-blue); box-shadow: 0 0 15px rgba(126, 200, 227, 0.6); }
   .color-purple .timeline-dot { background: var(--lavender); box-shadow: 0 0 15px rgba(196, 181, 253, 0.6); }
   .color-green .timeline-dot { background: var(--mint); box-shadow: 0 0 15px rgba(110, 231, 183, 0.6); }
-
-  .timeline-item:hover .timeline-dot {
-    transform: translateX(-50%) scale(1.4);
-  }
+  .timeline-item:hover .timeline-dot { transform: translateX(-50%) scale(1.4); }
 
   .timeline-card {
-    padding: 1.5rem;
-    border-radius: 16px;
-    transition: all 0.3s ease;
-    position: relative;
-    overflow: hidden;
+    padding: 1.5rem; border-radius: 16px;
+    transition: all 0.3s ease; position: relative; overflow: hidden;
   }
-
   .timeline-card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 3px;
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
     background: linear-gradient(90deg, transparent, var(--sakura-pink), transparent);
-    opacity: 0;
-    transition: opacity 0.3s ease;
+    opacity: 0; transition: opacity 0.3s ease;
   }
-
-  .timeline-card:hover {
-    transform: translateY(-5px);
-  }
-
-  .timeline-card:hover::before {
-    opacity: 1;
-  }
-
+  .timeline-card:hover { transform: translateY(-5px); }
+  .timeline-card:hover::before { opacity: 1; }
   .color-pink .timeline-card:hover { border-color: rgba(255, 183, 213, 0.3); box-shadow: var(--glow-pink); }
   .color-blue .timeline-card:hover { border-color: rgba(126, 200, 227, 0.3); box-shadow: var(--glow-blue); }
   .color-purple .timeline-card:hover { border-color: rgba(196, 181, 253, 0.3); box-shadow: var(--glow-purple); }
   .color-green .timeline-card:hover { border-color: rgba(110, 231, 183, 0.3); box-shadow: 0 0 20px rgba(110, 231, 183, 0.4); }
 
-  .card-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 0.8rem;
-  }
+  .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.8rem; }
 
   .category-tag {
-    font-size: 0.7rem;
-    padding: 0.2rem 0.6rem;
-    border-radius: 12px;
-    font-weight: 500;
-    background: rgba(255, 183, 213, 0.1);
-    color: var(--sakura-pink);
-    border: 1px solid rgba(255, 183, 213, 0.2);
+    font-size: 0.7rem; padding: 0.2rem 0.6rem; border-radius: 12px;
+    font-weight: 500; background: rgba(255, 183, 213, 0.1);
+    color: var(--sakura-pink); border: 1px solid rgba(255, 183, 213, 0.2);
   }
-
   .color-blue .category-tag { background: rgba(126, 200, 227, 0.1); color: var(--sky-blue); border-color: rgba(126, 200, 227, 0.2); }
   .color-purple .category-tag { background: rgba(196, 181, 253, 0.1); color: var(--lavender); border-color: rgba(196, 181, 253, 0.2); }
   .color-green .category-tag { background: rgba(110, 231, 183, 0.1); color: var(--mint); border-color: rgba(110, 231, 183, 0.2); }
 
-  .card-date {
-    font-size: 0.8rem;
-    color: var(--text-secondary);
-  }
-
-  .card-title {
-    font-size: 1.2rem;
-    font-weight: 600;
-    margin-bottom: 0.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.4rem;
-  }
-
+  .card-date { font-size: 0.8rem; color: var(--text-secondary); }
+  .card-title { font-size: 1.2rem; font-weight: 600; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.4rem; }
   .card-icon { font-size: 1.1em; }
 
-  .card-desc {
-    font-size: 0.9rem;
+  .card-commits {
+    margin-top: 1rem; overflow: hidden; max-height: 0; opacity: 0;
+    transition: max-height 0.4s ease, opacity 0.3s ease;
+  }
+
+  .commit-group {
+    margin-bottom: 1rem;
+    padding-bottom: 0.8rem;
+    border-bottom: 1px solid rgba(255, 183, 213, 0.08);
+  }
+  .commit-group:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+
+  .commit-date {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--sakura-pink);
+    margin-bottom: 0.4rem;
+    letter-spacing: 0.02em;
+  }
+
+  .color-blue .commit-date { color: var(--sky-blue); }
+  .color-purple .commit-date { color: var(--lavender); }
+  .color-green .commit-date { color: var(--mint); }
+
+  .commit-list {
+    list-style: none;
+    padding: 0;
+    counter-reset: commit-counter;
+  }
+
+  .commit-list li {
+    padding: 0.25rem 0 0.25rem 1.8rem;
+    font-size: 0.82rem;
     color: var(--text-secondary);
-    line-height: 1.6;
+    line-height: 1.5;
+    position: relative;
+    counter-increment: commit-counter;
   }
 
-  .card-changes {
-    margin-top: 1rem;
-    overflow: hidden;
-    max-height: 0;
-    opacity: 0;
-    transition: all 0.3s ease;
+  .commit-list li::before {
+    content: counter(commit-counter) ".";
+    position: absolute;
+    left: 0;
+    color: var(--sakura-pink);
+    font-weight: 500;
+    font-size: 0.78rem;
+    min-width: 1.5rem;
   }
 
-  .card-changes ul { list-style: none; padding: 0; }
-
-  .card-changes li {
-    padding: 0.3rem 0;
-    font-size: 0.85rem;
-    color: var(--text-secondary);
-    padding-left: 0.5rem;
-  }
+  .color-blue .commit-list li::before { color: var(--sky-blue); }
+  .color-purple .commit-list li::before { color: var(--lavender); }
+  .color-green .commit-list li::before { color: var(--mint); }
 
   .expand-btn {
-    background: none;
-    border: none;
-    color: var(--text-secondary);
-    font-size: 0.8rem;
-    cursor: pointer;
-    margin-top: 0.8rem;
-    display: flex;
-    align-items: center;
-    gap: 0.3rem;
-    transition: color 0.3s ease;
-    font-family: inherit;
+    background: none; border: none; color: var(--text-secondary);
+    font-size: 0.8rem; cursor: pointer; margin-top: 0.8rem;
+    display: flex; align-items: center; gap: 0.3rem;
+    transition: color 0.3s ease; font-family: inherit;
   }
-
   .expand-btn:hover { color: var(--sakura-pink); }
-
-  .expand-icon {
-    font-size: 0.7rem;
-    transition: transform 0.3s ease;
-  }
+  .expand-icon { font-size: 0.7rem; transition: transform 0.3s ease; }
 
   @media (max-width: 768px) {
     .timeline::before { left: 1rem; }
     .timeline-item {
       width: calc(100% - 3rem);
-      margin-left: 2.5rem !important;
-      margin-right: 0 !important;
-      padding-left: 1.5rem;
-      padding-right: 0;
+      margin-left: 2.5rem !important; margin-right: 0 !important;
+      padding-left: 1.5rem; padding-right: 0;
     }
     .timeline-connector { left: -1.5rem !important; right: auto !important; }
     .timeline-dot { left: -2rem !important; right: auto !important; }
