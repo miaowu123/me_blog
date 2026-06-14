@@ -1,4 +1,5 @@
 <canvas id="particle-canvas"></canvas>
+<div class="jumping-cat" id="jumpingCat">🐱</div>
 
 <script>
   const canvas = document.getElementById('particle-canvas') as HTMLCanvasElement;
@@ -298,6 +299,22 @@
     requestAnimationFrame(draw);
   }
 
+
+  // Jumping cat movement
+  const cat = document.getElementById('jumpingCat');
+  let catX = Math.random() * (window.innerWidth - 40);
+  let catDir = 1;
+  let catSpeed = 1.5;
+
+  function moveCat() {
+    catX += catDir * catSpeed;
+    if (catX > window.innerWidth - 40) { catDir = -1; cat.style.transform = 'scaleX(-1)'; }
+    if (catX < 0) { catDir = 1; cat.style.transform = 'scaleX(1)'; }
+    cat.style.left = catX + 'px';
+    requestAnimationFrame(moveCat);
+  }
+  moveCat();
+
   window.addEventListener('resize', resize);
   init();
   requestAnimationFrame(draw);
@@ -310,5 +327,22 @@
     width: 100%; height: 100%;
     z-index: 0;
     pointer-events: none;
+  }
+
+  .jumping-cat {
+    position: fixed;
+    bottom: 20px;
+    font-size: 2rem;
+    z-index: 100;
+    pointer-events: none;
+    animation: cat-bounce 1.5s ease-in-out infinite;
+    filter: drop-shadow(0 0 10px rgba(255, 183, 213, 0.5));
+  }
+
+  @keyframes cat-bounce {
+    0%, 100% { transform: translateY(0) scaleX(1); }
+    25% { transform: translateY(-30px) scaleX(1) rotate(-5deg); }
+    50% { transform: translateY(0) scaleX(1); }
+    75% { transform: translateY(-15px) scaleX(1) rotate(5deg); }
   }
 </style>
