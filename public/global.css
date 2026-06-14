@@ -4,6 +4,7 @@
   /* 樱花粉 (默认) */
   --bg-dark: #0d0d1a;
   --bg-gradient: linear-gradient(135deg, #0d0d1a 0%, #1a0d1a 50%, #0d0d1a 100%);
+  --bg-glass: rgba(21, 21, 48, 0.7);
   --bg-card: #151530;
   --sakura-pink: #ffb7d5;
   --sakura-deep: #ff6b9d;
@@ -33,6 +34,41 @@
   --glow-blue: 0 0 20px rgba(103, 232, 249, 0.4);
   --glow-purple: 0 0 20px rgba(165, 243, 252, 0.4);
 }
+
+/* Aurora Dark - 参考 aurora 主题的暗色 */
+[data-theme="aurora-dark"] {
+  --bg-dark: #0d0b12;
+  --bg-gradient: linear-gradient(135deg, #0d0b12 0%, #1a0d2e 40%, #0d1b2a 100%);
+  --bg-card: #1a1a2e;
+  --bg-glass: rgba(13, 11, 18, 0.7);
+  --sakura-pink: #0fb6d6;
+  --sakura-deep: #f4569d;
+  --sky-blue: #87c2fd;
+  --lavender: #dcb9fc;
+  --text-primary: #fff;
+  --text-secondary: #bebebe;
+  --glow-pink: 0 0 20px rgba(15, 182, 214, 0.4);
+  --glow-blue: 0 0 20px rgba(135, 194, 253, 0.4);
+  --glow-purple: 0 0 20px rgba(220, 185, 252, 0.4);
+}
+
+/* Aurora Light - 参考 aurora 主题的亮色 */
+[data-theme="aurora-light"] {
+  --bg-dark: #f1f3f9;
+  --bg-gradient: linear-gradient(135deg, #f1f3f9 0%, #e8eaf6 50%, #f1f3f9 100%);
+  --bg-card: #ffffff;
+  --bg-glass: rgba(255, 255, 255, 0.7);
+  --sakura-pink: #e93796;
+  --sakura-deep: #db4d52;
+  --sky-blue: #547ce7;
+  --lavender: #a03bff;
+  --text-primary: #333333;
+  --text-secondary: #858585;
+  --glow-pink: 0 0 20px rgba(233, 55, 150, 0.3);
+  --glow-blue: 0 0 20px rgba(84, 124, 231, 0.3);
+  --glow-purple: 0 0 20px rgba(160, 59, 255, 0.3);
+}
+
 
 /* 暗紫主题 */
 [data-theme="purple"] {
@@ -116,7 +152,7 @@ body {
 .glass {
   background: var(--bg-glass, rgba(21, 21, 48, 0.7));
   backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 183, 213, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   border-radius: 16px;
 }
 
