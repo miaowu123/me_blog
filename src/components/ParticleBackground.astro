@@ -1,0 +1,181 @@
+<canvas id="particle-canvas"></canvas>
+
+<script>
+  const canvas = document.getElementById('particle-canvas') as HTMLCanvasElement;
+  const ctx = canvas.getContext('2d')!;
+  let w: number, h: number;
+  
+  // 星星粒子
+  const particles: Array<{
+    x: number; y: number; vx: number; vy: number;
+    r: number; color: string; alpha: number; twinkleSpeed: number;
+  }> = [];
+  
+  // 樱花花瓣
+  const petals: Array<{
+    x: number; y: number; vx: number; vy: number;
+    rotation: number; rotationSpeed: number; size: number; alpha: number;
+    color: string; wobble: number; wobbleSpeed: number;
+  }> = [];
+
+  const starColors = ['#ffb7d5', '#7ec8e3', '#c4b5fd', '#fbbf24'];
+  // 多种粉色樱花
+  const petalColors = ['#ffb7d5', '#ffc4dd', '#ff9ec4', '#ffd1e8', '#ffb0c8', '#fff0f5'];
+
+  function resize() {
+    w = canvas.width = window.innerWidth;
+    h = canvas.height = window.innerHeight;
+  }
+
+  function init() {
+    resize();
+    // 星星
+    const starCount = Math.min(50, Math.floor((w * h) / 25000));
+    for (let i = 0; i < starCount; i++) {
+      particles.push({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        vx: (Math.random() - 0.5) * 0.3,
+        vy: (Math.random() - 0.5) * 0.3,
+        r: Math.random() * 1.5 + 0.5,
+        color: starColors[Math.floor(Math.random() * starColors.length)],
+        alpha: Math.random() * 0.6 + 0.2,
+        twinkleSpeed: Math.random() * 0.02 + 0.01,
+      });
+    }
+    // 樱花花瓣 - 35片，更大更明显
+    for (let i = 0; i < 35; i++) {
+      petals.push({
+        x: Math.random() * w,
+        y: Math.random() * h * 1.5 - h * 0.5,
+        vx: Math.random() * 0.4 + 0.1,
+        vy: Math.random() * 0.6 + 0.2,
+        rotation: Math.random() * Math.PI * 2,
+        rotationSpeed: (Math.random() - 0.5) * 0.02,
+        size: Math.random() * 12 + 6,
+        alpha: Math.random() * 0.5 + 0.4,
+        color: petalColors[Math.floor(Math.random() * petalColors.length)],
+        wobble: Math.random() * Math.PI * 2,
+        wobbleSpeed: Math.random() * 0.02 + 0.01,
+      });
+    }
+  }
+
+  function drawPetal(x: number, y: number, size: number, rotation: number, alpha: number, color: string) {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(rotation);
+    ctx.globalAlpha = alpha;
+    
+    // 花瓣主体 - 更饱满的形状
+    ctx.fillStyle = color;
+    ctx.beginPath();
+    ctx.moveTo(0, 0);
+    ctx.bezierCurveTo(size * 0.4, -size * 0.5, size * 0.9, -size * 0.3, size, 0);
+    ctx.bezierCurveTo(size * 0.9, size * 0.3, size * 0.4, size * 0.5, 0, 0);
+    ctx.fill();
+    
+    // 花瓣高光
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.25)';
+    ctx.beginPath();
+    ctx.ellipse(size * 0.45, -size * 0.05, size * 0.3, size * 0.12, -0.2, 0, Math.PI * 2);
+    ctx.fill();
+    
+    // 花瓣脉络
+    ctx.strokeStyle = 'rgba(255, 130, 170, 0.25)';
+    ctx.lineWidth = 0.5;
+    ctx.beginPath();
+    ctx.moveTo(size * 0.1, 0);
+    ctx.quadraticCurveTo(size * 0.5, -size * 0.05, size * 0.85, 0);
+    ctx.stroke();
+    
+    ctx.restore();
+  }
+
+  let time = 0;
+  function draw() {
+    ctx.clearRect(0, 0, w, h);
+    time += 0.016;
+
+    // 绘制连线
+    for (let i = 0; i < particles.length; i++) {
+      for (let j = i + 1; j < particles.length; j++) {
+        const dx = particles[i].x - particles[j].x;
+        const dy = particles[i].y - particles[j].y;
+        const dist = Math.sqrt(dx * dx + dy * dy);
+        if (dist < 120) {
+          ctx.beginPath();
+          ctx.strokeStyle = `rgba(196, 181, 253, ${0.1 * (1 - dist / 120)})`;
+          ctx.lineWidth = 0.5;
+          ctx.moveTo(particles[i].x, particles[i].y);
+          ctx.lineTo(particles[j].x, particles[j].y);
+          ctx.stroke();
+        }
+      }
+    }
+
+    // 绘制星星
+    for (const p of particles) {
+      p.x += p.vx;
+      p.y += p.vy;
+      if (p.x < 0 || p.x > w) p.vx *= -1;
+      if (p.y < 0 || p.y > h) p.vy *= -1;
+
+      const twinkle = Math.sin(time * p.twinkleSpeed * 60) * 0.3 + 0.7;
+      ctx.globalAlpha = p.alpha * twinkle;
+      
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
+      ctx.fillStyle = p.color;
+      ctx.fill();
+
+      // 光晕
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.r * 4, 0, Math.PI * 2);
+      const grad = ctx.createRadialGradient(p.x, p.y, 0, p.x, p.y, p.r * 4);
+      grad.addColorStop(0, p.color);
+      grad.addColorStop(1, 'transparent');
+      ctx.fillStyle = grad;
+      ctx.globalAlpha = p.alpha * twinkle * 0.2;
+      ctx.fill();
+      ctx.globalAlpha = 1;
+    }
+
+    // 绘制樱花花瓣
+    for (const petal of petals) {
+      // 飘落 + 左右摇曳
+      petal.wobble += petal.wobbleSpeed;
+      petal.x += petal.vx + Math.sin(petal.wobble) * 0.6;
+      petal.y += petal.vy;
+      petal.rotation += petal.rotationSpeed + Math.sin(petal.wobble * 0.5) * 0.005;
+
+      // 循环回收
+      if (petal.y > h + 30) {
+        petal.y = -30;
+        petal.x = Math.random() * w;
+      }
+      if (petal.x > w + 30) petal.x = -30;
+      if (petal.x < -30) petal.x = w + 30;
+
+      drawPetal(petal.x, petal.y, petal.size, petal.rotation, petal.alpha, petal.color);
+    }
+
+    requestAnimationFrame(draw);
+  }
+
+  window.addEventListener('resize', resize);
+  init();
+  draw();
+</script>
+
+<style>
+  #particle-canvas {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
+    pointer-events: none;
+  }
+</style>

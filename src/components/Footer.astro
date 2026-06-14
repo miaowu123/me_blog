@@ -1,0 +1,74 @@
+---
+---
+
+<footer class="site-footer">
+  <div class="footer-content">
+    <div class="footer-brand">
+      <span class="footer-logo">✿ Hermes Blog</span>
+      <p class="footer-desc">二次元风格个人博客 · 固件版本管理</p>
+    </div>
+    <div class="footer-links">
+      <a href="https://github.com" target="_blank">GitHub</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <p>✿ Built with Astro · Powered by 热爱与代码 ✿</p>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    position: relative;
+    z-index: 1;
+    padding: 3rem 2rem 1.5rem;
+    border-top: 1px solid rgba(255, 183, 213, 0.1);
+    margin-top: 4rem;
+    background: linear-gradient(to top, rgba(13, 13, 26, 0.9), transparent);
+  }
+
+  .footer-content {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+  }
+
+  .footer-logo {
+    font-size: 1rem;
+    font-weight: 600;
+    background: linear-gradient(135deg, var(--sakura-pink), var(--sky-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .footer-desc {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    margin-top: 0.3rem;
+  }
+
+  .footer-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: color 0.3s;
+  }
+
+  .footer-links a:hover {
+    color: var(--sakura-pink);
+  }
+
+  .footer-bottom {
+    text-align: center;
+    padding-top: 1.5rem;
+    border-top: 1px solid rgba(255, 183, 213, 0.05);
+  }
+
+  .footer-bottom p {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+  }
+</style>

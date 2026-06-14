@@ -1,0 +1,7 @@
+services:
+  blog:
+    build: .
+    container_name: hermes-blog
+    restart: unless-stopped
+    ports:
+      - "4321:80"

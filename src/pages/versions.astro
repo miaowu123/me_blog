@@ -1,0 +1,44 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ParticleBackground from '../components/ParticleBackground.astro';
+import Header from '../components/Header.astro';
+import Timeline from '../components/Timeline.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<BaseLayout title="版本树 - Hermes Blog">
+  <ParticleBackground />
+  <Header />
+  <main>
+    <section class="page-hero">
+      <h1 class="page-title">✿ 版本树 ✿</h1>
+      <p class="page-desc">所有固件版本的演进历程</p>
+    </section>
+    <Timeline />
+  </main>
+  <Footer />
+</BaseLayout>
+
+<style>
+  .page-hero {
+    position: relative;
+    z-index: 1;
+    padding: 8rem 2rem 2rem;
+    text-align: center;
+  }
+
+  .page-title {
+    font-size: 2.5rem;
+    background: linear-gradient(135deg, var(--sakura-pink), var(--sky-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 0.5rem;
+    font-family: 'Ma Shan Zheng', cursive;
+  }
+
+  .page-desc {
+    color: var(--text-secondary);
+    font-size: 1rem;
+  }
+</style>

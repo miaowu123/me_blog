@@ -1,0 +1,130 @@
+---
+---
+
+<header class="site-header">
+  <nav class="nav-container">
+    <a href="/" class="logo">
+      <span class="logo-icon">✿</span>
+      <span class="logo-text">Hermes Blog</span>
+    </a>
+    <div class="nav-links">
+      <a href="/" class="nav-link">
+        <span class="nav-icon">🏠</span>
+        <span>首页</span>
+      </a>
+      <a href="/versions" class="nav-link">
+        <span class="nav-icon">🌿</span>
+        <span>版本树</span>
+      </a>
+      <a href="/about" class="nav-link">
+        <span class="nav-icon">💫</span>
+        <span>关于</span>
+      </a>
+    </div>
+  </nav>
+</header>
+
+<style>
+  .site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 1rem 2rem;
+    background: rgba(13, 13, 26, 0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid rgba(255, 183, 213, 0.1);
+  }
+
+  .nav-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    text-decoration: none;
+    color: var(--text-primary);
+    font-weight: 700;
+    font-size: 1.2rem;
+  }
+
+  .logo-icon {
+    font-size: 1.5rem;
+    animation: pulse-glow 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse-glow {
+    0%, 100% { filter: drop-shadow(0 0 5px var(--sakura-pink)); }
+    50% { filter: drop-shadow(0 0 15px var(--sakura-pink)); }
+  }
+
+  .logo-text {
+    background: linear-gradient(135deg, var(--sakura-pink), var(--sky-blue));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .nav-links {
+    display: flex;
+    gap: 2rem;
+  }
+
+  .nav-link {
+    text-decoration: none;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .nav-icon {
+    font-size: 0.85em;
+    transition: transform 0.3s ease;
+  }
+
+  .nav-link::after {
+    content: '';
+    position: absolute;
+    bottom: -4px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background: linear-gradient(90deg, var(--sakura-pink), var(--sky-blue));
+    transition: width 0.3s ease;
+  }
+
+  .nav-link:hover {
+    color: var(--text-primary);
+  }
+
+  .nav-link:hover .nav-icon {
+    transform: scale(1.2);
+  }
+
+  .nav-link:hover::after {
+    width: 100%;
+  }
+
+  @media (max-width: 768px) {
+    .site-header {
+      padding: 0.8rem 1rem;
+    }
+    .nav-links {
+      gap: 1rem;
+    }
+    .nav-link {
+      font-size: 0.8rem;
+    }
+  }
+</style>

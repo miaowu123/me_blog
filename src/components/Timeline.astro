@@ -1,0 +1,441 @@
+---
+interface VersionNode {
+  version: string;
+  date: string;
+  title: string;
+  description: string;
+  changes: string[];
+  color?: 'pink' | 'blue' | 'purple' | 'green';
+  icon?: string;
+}
+
+const versions: VersionNode[] = [
+  {
+    version: 'v0.1.0',
+    date: '2026-06-14',
+    title: '项目初始化',
+    description: '搭建Astro博客框架，配置二次元主题',
+    changes: ['创建项目结构', '配置暗色主题', '实现粒子背景', '添加GSAP动画'],
+    color: 'pink',
+    icon: '🌸',
+  },
+  {
+    version: 'v0.0.3',
+    date: '2026-06-10',
+    title: '固件更新',
+    description: '4G模组固件优化，修复TCP连接问题',
+    changes: ['修复A7670G +IPD解析', '优化状态机超时处理', '增加强制重启机制'],
+    color: 'blue',
+    icon: '🌊',
+  },
+  {
+    version: 'v0.0.2',
+    date: '2026-06-01',
+    title: '状态机重构',
+    description: '网络模块状态机重构，支持多阶段流程',
+    changes: ['5阶段状态机架构', 'INIT流程完整实现', 'APN自动匹配IMSI'],
+    color: 'purple',
+    icon: '🔮',
+  },
+  {
+    version: 'v0.0.1',
+    date: '2026-05-15',
+    title: '原型开发',
+    description: '项目启动，完成基础AT指令测试',
+    changes: ['串口通信测试', 'AT指令解析器', '基础数据结构定义'],
+    color: 'green',
+    icon: '🌱',
+  },
+];
+---
+
+<section class="timeline-section" id="timeline">
+  <h2 class="section-title">
+    <span class="title-decoration">✧</span>
+    版本树
+    <span class="title-decoration">✧</span>
+  </h2>
+  <div class="timeline">
+    {versions.map((v, i) => (
+      <div class={`timeline-item ${i % 2 === 0 ? 'left' : 'right'} color-${v.color || 'pink'}`}>
+        <div class="timeline-connector">
+          <div class="timeline-dot"></div>
+          <div class="timeline-line"></div>
+        </div>
+        <div class="timeline-card glass" data-version={v.version}>
+          <div class="card-header">
+            <span class="version-badge">{v.version}</span>
+            <span class="card-date">{v.date}</span>
+          </div>
+          <h3 class="card-title">
+            <span class="card-icon">{v.icon}</span>
+            {v.title}
+          </h3>
+          <p class="card-desc">{v.description}</p>
+          <div class="card-changes" style="display: none;">
+            <ul>
+              {v.changes.map(change => (
+                <li>✿ {change}</li>
+              ))}
+            </ul>
+          </div>
+          <button class="expand-btn" onclick="toggleCard(this)">
+            <span class="expand-text">展开详情</span>
+            <span class="expand-icon">▼</span>
+          </button>
+        </div>
+      </div>
+    ))}
+  </div>
+</section>
+
+<script>
+  function toggleCard(btn: HTMLButtonElement) {
+    const card = btn.closest('.timeline-card')!;
+    const changes = card.querySelector('.card-changes') as HTMLElement;
+    const text = btn.querySelector('.expand-text')!;
+    const icon = btn.querySelector('.expand-icon') as HTMLElement;
+
+    if (changes.style.display === 'none') {
+      changes.style.display = 'block';
+      changes.style.maxHeight = changes.scrollHeight + 'px';
+      changes.style.opacity = '1';
+      text.textContent = '收起详情';
+      icon.style.transform = 'rotate(180deg)';
+      card.classList.add('expanded');
+    } else {
+      changes.style.maxHeight = '0';
+      changes.style.opacity = '0';
+      setTimeout(() => { changes.style.display = 'none'; }, 300);
+      text.textContent = '展开详情';
+      icon.style.transform = 'rotate(0deg)';
+      card.classList.remove('expanded');
+    }
+  }
+
+  // Scroll animation with IntersectionObserver
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.2 });
+
+  document.querySelectorAll('.timeline-item').forEach(el => observer.observe(el));
+</script>
+
+<style>
+  .timeline-section {
+    position: relative;
+    z-index: 1;
+    padding: 6rem 2rem;
+    max-width: 1000px;
+    margin: 0 auto;
+  }
+
+  .section-title {
+    text-align: center;
+    font-size: 2rem;
+    margin-bottom: 4rem;
+    color: var(--text-primary);
+    letter-spacing: 0.1em;
+    font-family: 'Ma Shan Zheng', cursive;
+  }
+
+  .title-decoration {
+    color: var(--sakura-pink);
+    font-size: 0.8em;
+    margin: 0 0.5rem;
+  }
+
+  .timeline {
+    position: relative;
+    padding: 2rem 0;
+  }
+
+  .timeline::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(
+      to bottom,
+      transparent,
+      var(--lavender) 10%,
+      var(--sakura-pink) 50%,
+      var(--sky-blue) 90%,
+      transparent
+    );
+    transform: translateX(-50%);
+    box-shadow: 0 0 10px rgba(196, 181, 253, 0.3);
+  }
+
+  .timeline-item {
+    position: relative;
+    width: 45%;
+    margin-bottom: 3rem;
+    opacity: 0;
+    transform: translateY(30px);
+    transition: all 0.6s cubic-bezier(0.23, 1, 0.32, 1);
+  }
+
+  .timeline-item.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  .timeline-item.left {
+    margin-right: auto;
+    margin-left: 0;
+    padding-right: 3rem;
+  }
+
+  .timeline-item.right {
+    margin-left: auto;
+    margin-right: 0;
+    padding-left: 3rem;
+  }
+
+  .timeline-connector {
+    position: absolute;
+    top: 1.5rem;
+    width: 2px;
+    height: calc(100% - 3rem);
+  }
+
+  .timeline-item.left .timeline-connector {
+    right: -1rem;
+  }
+
+  .timeline-item.right .timeline-connector {
+    left: -1rem;
+  }
+
+  .timeline-dot {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    position: absolute;
+    top: 0;
+    transform: translateX(-50%);
+    transition: all 0.3s ease;
+    border: 2px solid var(--bg-dark);
+  }
+
+  .timeline-item.left .timeline-dot {
+    right: -2rem;
+  }
+
+  .timeline-item.right .timeline-dot {
+    left: -2rem;
+  }
+
+  .color-pink .timeline-dot {
+    background: var(--sakura-pink);
+    box-shadow: 0 0 15px rgba(255, 183, 213, 0.6);
+  }
+
+  .color-blue .timeline-dot {
+    background: var(--sky-blue);
+    box-shadow: 0 0 15px rgba(126, 200, 227, 0.6);
+  }
+
+  .color-purple .timeline-dot {
+    background: var(--lavender);
+    box-shadow: 0 0 15px rgba(196, 181, 253, 0.6);
+  }
+
+  .color-green .timeline-dot {
+    background: var(--mint);
+    box-shadow: 0 0 15px rgba(110, 231, 183, 0.6);
+  }
+
+  .timeline-item:hover .timeline-dot {
+    transform: translateX(-50%) scale(1.4);
+  }
+
+  .timeline-card {
+    padding: 1.5rem;
+    border-radius: 16px;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .timeline-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--sakura-pink), transparent);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .timeline-card:hover {
+    transform: translateY(-5px);
+  }
+
+  .timeline-card:hover::before {
+    opacity: 1;
+  }
+
+  .color-pink .timeline-card:hover {
+    border-color: rgba(255, 183, 213, 0.3);
+    box-shadow: var(--glow-pink);
+  }
+
+  .color-blue .timeline-card:hover {
+    border-color: rgba(126, 200, 227, 0.3);
+    box-shadow: var(--glow-blue);
+  }
+
+  .color-purple .timeline-card:hover {
+    border-color: rgba(196, 181, 253, 0.3);
+    box-shadow: var(--glow-purple);
+  }
+
+  .color-green .timeline-card:hover {
+    border-color: rgba(110, 231, 183, 0.3);
+    box-shadow: 0 0 20px rgba(110, 231, 183, 0.4);
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.8rem;
+  }
+
+  .version-badge {
+    font-size: 0.75rem;
+    padding: 0.25rem 0.7rem;
+    border-radius: 20px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+
+  .color-pink .version-badge {
+    background: rgba(255, 183, 213, 0.15);
+    color: var(--sakura-pink);
+    border: 1px solid rgba(255, 183, 213, 0.3);
+  }
+
+  .color-blue .version-badge {
+    background: rgba(126, 200, 227, 0.15);
+    color: var(--sky-blue);
+    border: 1px solid rgba(126, 200, 227, 0.3);
+  }
+
+  .color-purple .version-badge {
+    background: rgba(196, 181, 253, 0.15);
+    color: var(--lavender);
+    border: 1px solid rgba(196, 181, 253, 0.3);
+  }
+
+  .color-green .version-badge {
+    background: rgba(110, 231, 183, 0.15);
+    color: var(--mint);
+    border: 1px solid rgba(110, 231, 183, 0.3);
+  }
+
+  .card-date {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+  }
+
+  .card-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .card-icon {
+    font-size: 1.1em;
+  }
+
+  .card-desc {
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    line-height: 1.6;
+  }
+
+  .card-changes {
+    margin-top: 1rem;
+    overflow: hidden;
+    max-height: 0;
+    opacity: 0;
+    transition: all 0.3s ease;
+  }
+
+  .card-changes ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .card-changes li {
+    padding: 0.3rem 0;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    padding-left: 0.5rem;
+  }
+
+  .expand-btn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 0.8rem;
+    cursor: pointer;
+    margin-top: 0.8rem;
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    transition: color 0.3s ease;
+    font-family: inherit;
+  }
+
+  .expand-btn:hover {
+    color: var(--sakura-pink);
+  }
+
+  .expand-icon {
+    font-size: 0.7rem;
+    transition: transform 0.3s ease;
+  }
+
+  @media (max-width: 768px) {
+    .timeline::before {
+      left: 1rem;
+    }
+
+    .timeline-item {
+      width: calc(100% - 3rem);
+      margin-left: 2.5rem !important;
+      margin-right: 0 !important;
+      padding-left: 1.5rem;
+      padding-right: 0;
+    }
+
+    .timeline-connector {
+      left: -1.5rem !important;
+      right: auto !important;
+    }
+
+    .timeline-dot {
+      left: -2rem !important;
+      right: auto !important;
+    }
+
+    .timeline-section {
+      padding: 3rem 1rem;
+    }
+  }
+</style>

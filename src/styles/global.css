@@ -1,0 +1,78 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Ma+Shan+Zheng&display=swap');
+
+:root {
+  /* 二次元粉蓝紫配色 */
+  --bg-dark: #0d0d1a;
+  --bg-card: #151530;
+  --sakura-pink: #ffb7d5;
+  --sakura-deep: #ff6b9d;
+  --sky-blue: #7ec8e3;
+  --lavender: #c4b5fd;
+  --mint: #6ee7b7;
+  --peach: #fbbf24;
+  --text-primary: #f0e6ff;
+  --text-secondary: #a0a0c0;
+  --glow-pink: 0 0 20px rgba(255, 183, 213, 0.4);
+  --glow-blue: 0 0 20px rgba(126, 200, 227, 0.4);
+  --glow-purple: 0 0 20px rgba(196, 181, 253, 0.4);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Noto Sans SC', sans-serif;
+  background: var(--bg-dark);
+  color: var(--text-primary);
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-dark);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--sakura-pink);
+  border-radius: 3px;
+}
+
+/* Selection */
+::selection {
+  background: rgba(255, 183, 213, 0.3);
+  color: #fff;
+}
+
+/* Utility classes */
+.neon-text-pink {
+  color: var(--sakura-deep);
+  text-shadow: 0 0 10px rgba(255, 107, 157, 0.7);
+}
+
+.neon-text-blue {
+  color: var(--sky-blue);
+  text-shadow: 0 0 10px rgba(126, 200, 227, 0.7);
+}
+
+.glass {
+  background: rgba(21, 21, 48, 0.7);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 183, 213, 0.12);
+  border-radius: 16px;
+}
+
+/* 二次元装饰星星 */
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
