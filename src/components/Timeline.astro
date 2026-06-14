@@ -65,12 +65,8 @@ const categories = Object.keys(categoryMap).filter(cat =>
 
 <section class="timeline-section" id="timeline">
   <div class="category-tabs">
-    <button class="tab-btn active" data-category="all">
-      <span class="tab-icon">✧</span>
-      全部
-    </button>
     {categories.map(cat => (
-      <button class="tab-btn" data-category={cat}>
+      <button class={`tab-btn ${cat === categories[0] ? 'active' : ''}`} data-category={cat}>
         <span class="tab-icon">
           {cat === 'z_general' ? '📦' : cat === 'z_geely' ? '🚗' : cat === 'z_xuyu808' ? '🏭' : '⚡'}
         </span>
