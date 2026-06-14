@@ -1,128 +1,128 @@
-     1|@import url('https://fonts.loli.net/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Ma+Shan+Zheng&display=swap');
-     2|
-     3|:root {
-     4|  /* 樱花粉 (默认) */
-     5|  --bg-dark: #0d0d1a;
+@import url('https://fonts.loli.net/css2?family=Noto+Sans+SC:wght@300;400;500;700&family=Ma+Shan+Zheng&display=swap');
+
+:root {
+  /* 樱花粉 (默认) */
+  --bg-dark: #0d0d1a;
   --bg-gradient: linear-gradient(135deg, #0d0d1a 0%, #1a0d1a 50%, #0d0d1a 100%);
-     6|  --bg-card: #151530;
-     7|  --sakura-pink: #ffb7d5;
-     8|  --sakura-deep: #ff6b9d;
-     9|  --sky-blue: #7ec8e3;
-    10|  --lavender: #c4b5fd;
-    11|  --mint: #6ee7b7;
-    12|  --peach: #fbbf24;
-    13|  --text-primary: #f0e6ff;
-    14|  --text-secondary: #a0a0c0;
-    15|  --glow-pink: 0 0 20px rgba(255, 183, 213, 0.4);
-    16|  --glow-blue: 0 0 20px rgba(126, 200, 227, 0.4);
-    17|  --glow-purple: 0 0 20px rgba(196, 181, 253, 0.4);
-    18|}
-    19|
-    20|/* 薄荷绿主题 */
-    21|[data-theme="mint"] {
-    22|  --bg-dark: #0a1a1a;
+  --bg-glass: rgba(21, 21, 48, 0.7);
+  --bg-card: #151530;
+  --sakura-pink: #ffb7d5;
+  --sakura-deep: #ff6b9d;
+  --sky-blue: #7ec8e3;
+  --lavender: #c4b5fd;
+  --mint: #6ee7b7;
+  --peach: #fbbf24;
+  --text-primary: #f0e6ff;
+  --text-secondary: #a0a0c0;
+  --glow-pink: 0 0 20px rgba(255, 183, 213, 0.4);
+  --glow-blue: 0 0 20px rgba(126, 200, 227, 0.4);
+  --glow-purple: 0 0 20px rgba(196, 181, 253, 0.4);
+}
+
+/* 薄荷绿主题 */
+[data-theme="mint"] {
+  --bg-dark: #0a1a1a;
   --bg-gradient: linear-gradient(135deg, #0a1a1a 0%, #0d2020 50%, #0a1a1a 100%);
-    23|  --bg-card: #0f2626;
-    24|  --sakura-pink: #6ee7b7;
-    25|  --sakura-deep: #34d399;
-    26|  --sky-blue: #67e8f9;
-    27|  --lavender: #a5f3fc;
-    28|  --text-primary: #e0fff5;
-    29|  --text-secondary: #80c0b0;
-    30|  --glow-pink: 0 0 20px rgba(110, 231, 183, 0.4);
-    31|  --glow-blue: 0 0 20px rgba(103, 232, 249, 0.4);
-    32|  --glow-purple: 0 0 20px rgba(165, 243, 252, 0.4);
-    33|}
-    34|
-    35|/* 暗紫主题 */
-    36|[data-theme="purple"] {
-    37|  --bg-dark: #150a20;
+  --bg-card: #0f2626;
+  --sakura-pink: #6ee7b7;
+  --sakura-deep: #34d399;
+  --sky-blue: #67e8f9;
+  --lavender: #a5f3fc;
+  --text-primary: #e0fff5;
+  --text-secondary: #80c0b0;
+  --glow-pink: 0 0 20px rgba(110, 231, 183, 0.4);
+  --glow-blue: 0 0 20px rgba(103, 232, 249, 0.4);
+  --glow-purple: 0 0 20px rgba(165, 243, 252, 0.4);
+}
+
+/* 暗紫主题 */
+[data-theme="purple"] {
+  --bg-dark: #150a20;
   --bg-gradient: linear-gradient(135deg, #150a20 0%, #200a30 50%, #150a20 100%);
-    38|  --bg-card: #1f1030;
-    39|  --sakura-pink: #c4b5fd;
-    40|  --sakura-deep: #a78bfa;
-    41|  --sky-blue: #e879f9;
-    42|  --lavender: #f0abfc;
-    43|  --text-primary: #f0e6ff;
-    44|  --text-secondary: #a090c0;
-    45|  --glow-pink: 0 0 20px rgba(196, 181, 253, 0.4);
-    46|  --glow-blue: 0 0 20px rgba(232, 121, 249, 0.4);
-    47|  --glow-purple: 0 0 20px rgba(240, 171, 252, 0.4);
-    48|}
-    49|
-    50|/* 海蓝主题 */
-    51|[data-theme="ocean"] {
-    52|  --bg-dark: #0a1520;
+  --bg-card: #1f1030;
+  --sakura-pink: #c4b5fd;
+  --sakura-deep: #a78bfa;
+  --sky-blue: #e879f9;
+  --lavender: #f0abfc;
+  --text-primary: #f0e6ff;
+  --text-secondary: #a090c0;
+  --glow-pink: 0 0 20px rgba(196, 181, 253, 0.4);
+  --glow-blue: 0 0 20px rgba(232, 121, 249, 0.4);
+  --glow-purple: 0 0 20px rgba(240, 171, 252, 0.4);
+}
+
+/* 海蓝主题 */
+[data-theme="ocean"] {
+  --bg-dark: #0a1520;
   --bg-gradient: linear-gradient(135deg, #0a1520 0%, #0a2030 50%, #0a1520 100%);
-    53|  --bg-card: #102030;
-    54|  --sakura-pink: #7ec8e3;
-    55|  --sakura-deep: #38bdf8;
-    56|  --sky-blue: #fbbf24;
-    57|  --lavender: #fcd34d;
-    58|  --text-primary: #e0f0ff;
-    59|  --text-secondary: #80a0c0;
-    60|  --glow-pink: 0 0 20px rgba(126, 200, 227, 0.4);
-    61|  --glow-blue: 0 0 20px rgba(251, 191, 36, 0.4);
-    62|  --glow-purple: 0 0 20px rgba(252, 211, 77, 0.4);
-    63|}
-    64|
-    65|* {
-    66|  margin: 0;
-    67|  padding: 0;
-    68|  box-sizing: border-box;
-    69|}
-    70|
-    71|html {
-    72|  scroll-behavior: smooth;
-    73|}
-    74|
-    75|body {
-    76|  font-family: 'Noto Sans SC', sans-serif;
-    77|  background: var(--bg-gradient, var(--bg-dark));
-    78|  color: var(--text-primary);
-    79|  overflow-x: hidden;
-    80|  min-height: 100vh;
-    81|}
-    82|
-    83|/* Scrollbar */
-    84|::-webkit-scrollbar {
-    85|  width: 6px;
-    86|}
-    87|::-webkit-scrollbar-track {
-    88|  background: var(--bg-gradient, var(--bg-dark));
-    89|}
-    90|::-webkit-scrollbar-thumb {
-    91|  background: var(--sakura-pink);
-    92|  border-radius: 3px;
-    93|}
-    94|
-    95|/* Selection */
-    96|::selection {
-    97|  background: rgba(255, 183, 213, 0.3);
-    98|  color: #fff;
-    99|}
-   100|
-   101|/* Utility classes */
-   102|.neon-text-pink {
-   103|  color: var(--sakura-deep);
-   104|  text-shadow: 0 0 10px rgba(255, 107, 157, 0.7);
-   105|}
-   106|
-   107|.neon-text-blue {
-   108|  color: var(--sky-blue);
-   109|  text-shadow: 0 0 10px rgba(126, 200, 227, 0.7);
-   110|}
-   111|
-   112|.glass {
-   113|  background: rgba(21, 21, 48, 0.7);
-   114|  backdrop-filter: blur(12px);
-   115|  border: 1px solid rgba(255, 183, 213, 0.12);
-   116|  border-radius: 16px;
-   117|}
-   118|
-   119|/* 二次元装饰星星 */
-   120|@keyframes twinkle {
-   121|  0%, 100% { opacity: 0.3; transform: scale(1); }
-   122|  50% { opacity: 1; transform: scale(1.2); }
-   123|}
-   124|
+  --bg-card: #102030;
+  --sakura-pink: #7ec8e3;
+  --sakura-deep: #38bdf8;
+  --sky-blue: #fbbf24;
+  --lavender: #fcd34d;
+  --text-primary: #e0f0ff;
+  --text-secondary: #80a0c0;
+  --glow-pink: 0 0 20px rgba(126, 200, 227, 0.4);
+  --glow-blue: 0 0 20px rgba(251, 191, 36, 0.4);
+  --glow-purple: 0 0 20px rgba(252, 211, 77, 0.4);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Noto Sans SC', sans-serif;
+  background: var(--bg-gradient, var(--bg-dark));
+  color: var(--text-primary);
+  overflow-x: hidden;
+  min-height: 100vh;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-gradient, var(--bg-dark));
+}
+::-webkit-scrollbar-thumb {
+  background: var(--sakura-pink);
+  border-radius: 3px;
+}
+
+/* Selection */
+::selection {
+  background: rgba(255, 183, 213, 0.3);
+  color: #fff;
+}
+
+/* Utility classes */
+.neon-text-pink {
+  color: var(--sakura-deep);
+  text-shadow: 0 0 10px rgba(255, 107, 157, 0.7);
+}
+
+.neon-text-blue {
+  color: var(--sky-blue);
+  text-shadow: 0 0 10px rgba(126, 200, 227, 0.7);
+}
+
+.glass {
+  background: var(--bg-glass, rgba(21, 21, 48, 0.7));
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 16px;
+}
+
+/* 二次元装饰星星 */
+@keyframes twinkle {
+  0%, 100% { opacity: 0.3; transform: scale(1); }
+  50% { opacity: 1; transform: scale(1.2); }
+}
