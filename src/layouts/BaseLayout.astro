@@ -15,9 +15,7 @@ const { title, description = '二次元风格个人博客' } = Astro.props;
     <meta name="description" content={description} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <title>{title}</title>
-    <style is:global>
-      @import '../styles/global.css';
-    </style>
+    <link rel="stylesheet" href="/global.css" />
   </head>
   <body>
     <slot />
