@@ -83,7 +83,7 @@ const categories = Object.keys(categoryMap).filter(cat =>
 
   <div class="timeline">
     {versions.map((v, i) => (
-      <div class={`timeline-item ${i % 2 === 0 ? 'left' : 'right'} color-${v.color}`}
+      <div class={`timeline-item ${i % 2 === 0 ? 'left' : 'right'} color-${v.color} ${v.category !== categories[0] ? 'tab-hidden' : ''}`}
            data-category={v.category}>
         <div class="timeline-connector">
           <div class="timeline-dot"></div>
@@ -153,21 +153,18 @@ const categories = Object.keys(categoryMap).filter(cat =>
     }
   });
 
-  document.querySelectorAll('.tab-btn').forEach(btn => {
-    btn.addEventListener('click', () => {
-      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      const cat = btn.getAttribute('data-category');
-      document.querySelectorAll('.timeline-item').forEach(item => {
-        if (cat === 'all' || item.getAttribute('data-category') === cat) {
-          item.style.display = '';
-          item.classList.add('visible');
-        } else {
-          item.style.display = 'none';
-        }
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        const cat = btn.getAttribute('data-category');
+        document.querySelectorAll('.timeline-item').forEach(item => {
+          const match = item.getAttribute('data-category') === cat;
+          item.classList.toggle('tab-hidden', !match);
+          if (match) item.classList.add('visible');
+        });
       });
     });
-  });
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
@@ -269,6 +266,7 @@ const categories = Object.keys(categoryMap).filter(cat =>
   }
 
   .timeline-item.visible { opacity: 1; transform: translateY(0); }
+  .timeline-item.tab-hidden { display: none !important; }
   .timeline-item.left { margin-right: auto; margin-left: 0; padding-right: 3rem; }
   .timeline-item.right { margin-left: auto; margin-right: 0; padding-left: 3rem; }
 

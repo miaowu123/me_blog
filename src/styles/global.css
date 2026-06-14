@@ -19,10 +19,14 @@
 
 /* 薄荷绿主题 */
 [data-theme="mint"] {
+  --bg-dark: #0a1a1a;
+  --bg-card: #0f2626;
   --sakura-pink: #6ee7b7;
   --sakura-deep: #34d399;
   --sky-blue: #67e8f9;
   --lavender: #a5f3fc;
+  --text-primary: #e0fff5;
+  --text-secondary: #80c0b0;
   --glow-pink: 0 0 20px rgba(110, 231, 183, 0.4);
   --glow-blue: 0 0 20px rgba(103, 232, 249, 0.4);
   --glow-purple: 0 0 20px rgba(165, 243, 252, 0.4);
@@ -30,10 +34,14 @@
 
 /* 暗紫主题 */
 [data-theme="purple"] {
+  --bg-dark: #150a20;
+  --bg-card: #1f1030;
   --sakura-pink: #c4b5fd;
   --sakura-deep: #a78bfa;
   --sky-blue: #e879f9;
   --lavender: #f0abfc;
+  --text-primary: #f0e6ff;
+  --text-secondary: #a090c0;
   --glow-pink: 0 0 20px rgba(196, 181, 253, 0.4);
   --glow-blue: 0 0 20px rgba(232, 121, 249, 0.4);
   --glow-purple: 0 0 20px rgba(240, 171, 252, 0.4);
@@ -41,10 +49,14 @@
 
 /* 海蓝主题 */
 [data-theme="ocean"] {
+  --bg-dark: #0a1520;
+  --bg-card: #102030;
   --sakura-pink: #7ec8e3;
   --sakura-deep: #38bdf8;
   --sky-blue: #fbbf24;
   --lavender: #fcd34d;
+  --text-primary: #e0f0ff;
+  --text-secondary: #80a0c0;
   --glow-pink: 0 0 20px rgba(126, 200, 227, 0.4);
   --glow-blue: 0 0 20px rgba(251, 191, 36, 0.4);
   --glow-purple: 0 0 20px rgba(252, 211, 77, 0.4);
