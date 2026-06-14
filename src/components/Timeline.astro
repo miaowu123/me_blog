@@ -117,7 +117,7 @@ const categories = Object.keys(categoryMap).filter(cat =>
             </div>
           )}
           {v.changes.length > 0 && (
-            <button class="expand-btn" onclick="toggleCard(this)">
+            <button class="expand-btn">
               <span class="expand-text">展开详情</span>
               <span class="expand-icon">▼</span>
             </button>
@@ -129,16 +129,22 @@ const categories = Object.keys(categoryMap).filter(cat =>
 </section>
 
 <script>
-  function toggleCard(btn: HTMLButtonElement) {
+  // Event delegation for expand buttons
+  document.addEventListener('click', (e) => {
+    const btn = (e.target as HTMLElement).closest('.expand-btn');
+    if (!btn) return;
+    
     const card = btn.closest('.timeline-card')!;
     const changes = card.querySelector('.card-changes') as HTMLElement;
     const text = btn.querySelector('.expand-text')!;
     const icon = btn.querySelector('.expand-icon') as HTMLElement;
 
-    if (changes.style.display === 'none') {
+    if (changes.style.display === 'none' || !changes.style.display) {
       changes.style.display = 'block';
-      changes.style.maxHeight = changes.scrollHeight + 'px';
-      changes.style.opacity = '1';
+      requestAnimationFrame(() => {
+        changes.style.maxHeight = changes.scrollHeight + 'px';
+        changes.style.opacity = '1';
+      });
       text.textContent = '收起详情';
       icon.style.transform = 'rotate(180deg)';
       card.classList.add('expanded');
@@ -150,7 +156,7 @@ const categories = Object.keys(categoryMap).filter(cat =>
       icon.style.transform = 'rotate(0deg)';
       card.classList.remove('expanded');
     }
-  }
+  });
 
   // 分类标签切换
   document.querySelectorAll('.tab-btn').forEach(btn => {
