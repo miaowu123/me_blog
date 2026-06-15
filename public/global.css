@@ -52,21 +52,21 @@
   --glow-purple: 0 0 20px rgba(220, 185, 252, 0.4);
 }
 
-/* Aurora Light - 参考 aurora 主题的亮色 */
-[data-theme="aurora-light"] {
-  --bg-dark: #f1f3f9;
-  --bg-gradient: linear-gradient(135deg, #f1f3f9 0%, #e8eaf6 50%, #f1f3f9 100%);
-  --bg-card: #ffffff;
-  --bg-glass: rgba(255, 255, 255, 0.7);
-  --sakura-pink: #e93796;
-  --sakura-deep: #db4d52;
-  --sky-blue: #547ce7;
-  --lavender: #a03bff;
-  --text-primary: #333333;
-  --text-secondary: #858585;
-  --glow-pink: 0 0 20px rgba(233, 55, 150, 0.3);
-  --glow-blue: 0 0 20px rgba(84, 124, 231, 0.3);
-  --glow-purple: 0 0 20px rgba(160, 59, 255, 0.3);
+/* 夕照主题 - 暖色系暗色 */
+[data-theme="sunset"] {
+  --bg-dark: #1a0f0a;
+  --bg-gradient: linear-gradient(135deg, #1a0f0a 0%, #2a1510 50%, #1a0f0a 100%);
+  --bg-card: #251812;
+  --bg-glass: rgba(26, 15, 10, 0.7);
+  --sakura-pink: #ff9a5c;
+  --sakura-deep: #ff6b3d;
+  --sky-blue: #ffd700;
+  --lavender: #ffaa44;
+  --text-primary: #ffe8d6;
+  --text-secondary: #c09070;
+  --glow-pink: 0 0 20px rgba(255, 154, 92, 0.4);
+  --glow-blue: 0 0 20px rgba(255, 215, 0, 0.4);
+  --glow-purple: 0 0 20px rgba(255, 170, 68, 0.4);
 }
 
 
