@@ -19,10 +19,12 @@ interface VersionNode {
 }
 
 const categoryMap: Record<string, string> = {
-  z_general: 'Z系列通用',
-  z_geely: 'Z系列吉利定制',
-  z_xuyu808: 'Z系列旭宇808定制',
+  z_general: 'Z系列通用固件',
+  z_geely: 'Z系列吉利固件',
+  z_xuyu808: 'Z系列旭宇808固件',
   gd_general: 'GD通用',
+  gd_geely: 'GD吉利固件',
+  gd_d92hat: 'GD D92H-AT',
 };
 
 const versions: VersionNode[] = [];
@@ -67,9 +69,9 @@ const categories = Object.keys(categoryMap).filter(cat =>
   <div class="category-tabs">
     {categories.map(cat => (
       <button class={`tab-btn ${cat === categories[0] ? 'active' : ''}`} data-category={cat}>
-        <span class="tab-icon">
-          {cat === 'z_general' ? '📦' : cat === 'z_geely' ? '🚗' : cat === 'z_xuyu808' ? '🏭' : '⚡'}
-        </span>
+          <span class="tab-icon">
+            {cat === 'z_general' ? '📦' : cat === 'z_geely' ? '🚚' : cat === 'z_xuyu808' ? '🏭' : cat === 'gd_general' ? '⚡' : cat === 'gd_geely' ? '⚡' : '🔧'}
+          </span>
         {categoryMap[cat]}
       </button>
     ))}
